@@ -13,7 +13,7 @@ import {
 export const DEFAULT_NAV_ITEMS = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/" },
   { name: "Quotes", icon: Quote, href: "/quotes" },
-  { name: "Categories", icon: Layers, href: "#categories" },
+  { name: "Categories", icon: Layers, href: "/categories" },
   { name: "Scan Quote", icon: ScanText, href: "#scan" }
 ];
 

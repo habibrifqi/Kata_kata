@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home as HomeIcon, Quote, ScanText, User } from "lucide-react";
+import { Home as HomeIcon, Quote, Layers, User } from "lucide-react";
 
 export default function MobileNav({ activeMenu = "Home" }) {
   return (
@@ -29,11 +29,15 @@ export default function MobileNav({ activeMenu = "Home" }) {
         <span className="font-label-sm text-xs mt-0.5">Quotes</span>
       </Link>
       <Link
-        className="flex flex-col items-center justify-center text-on-surface-variant/70 hover:text-primary transition-all"
-        href="#scan"
+        className={`flex flex-col items-center justify-center transition-all ${
+          activeMenu === "Categories"
+            ? "text-primary scale-110"
+            : "text-on-surface-variant/70 hover:text-primary"
+        }`}
+        href="/categories"
       >
-        <ScanText className="w-5 h-5" />
-        <span className="font-label-sm text-xs mt-0.5">Scan</span>
+        <Layers className="w-5 h-5" />
+        <span className="font-label-sm text-xs mt-0.5">Categories</span>
       </Link>
       <Link
         className="flex flex-col items-center justify-center text-on-surface-variant/70 hover:text-primary transition-all"

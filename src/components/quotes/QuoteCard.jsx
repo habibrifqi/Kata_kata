@@ -9,6 +9,12 @@ export default function QuoteCard({
   onEdit,
   onDelete
 }) {
+  const categoriesList = Array.isArray(quote.categories)
+    ? quote.categories
+    : quote.category
+    ? [quote.category]
+    : [];
+
   const getCategoryBadgeStyle = (category) => {
     switch (category?.toLowerCase()) {
       case "motivasi":
@@ -60,10 +66,15 @@ export default function QuoteCard({
     return (
       <div className="quote-card glass-surface p-6 rounded-2xl relative flex flex-col md:flex-row md:items-center justify-between gap-4 group transition-all duration-300">
         <div className="flex-1 space-y-2">
-          <div className="flex items-center gap-3">
-            <span className={`px-3 py-1 rounded-md font-label-sm text-xs uppercase tracking-wider ${getCategoryBadgeStyle(quote.category)}`}>
-              {quote.category}
-            </span>
+          <div className="flex flex-wrap items-center gap-2">
+            {categoriesList.map((cat, idx) => (
+              <span
+                key={idx}
+                className={`px-3 py-1 rounded-md font-label-sm text-xs uppercase tracking-wider font-semibold ${getCategoryBadgeStyle(cat)}`}
+              >
+                {cat}
+              </span>
+            ))}
           </div>
           <blockquote className="my-2">
             <p className="font-headline-sm text-lg text-on-surface leading-relaxed italic">
@@ -138,11 +149,16 @@ export default function QuoteCard({
         </button>
       </div>
 
-      {/* Category Badge */}
-      <div className="mb-4">
-        <span className={`px-3 py-1 rounded-md font-label-sm text-xs uppercase tracking-wider font-semibold ${getCategoryBadgeStyle(quote.category)}`}>
-          {quote.category}
-        </span>
+      {/* Category Badges */}
+      <div className="mb-4 flex flex-wrap gap-2 pr-24">
+        {categoriesList.map((cat, idx) => (
+          <span
+            key={idx}
+            className={`px-3 py-1 rounded-md font-label-sm text-xs uppercase tracking-wider font-semibold ${getCategoryBadgeStyle(cat)}`}
+          >
+            {cat}
+          </span>
+        ))}
       </div>
 
       {/* Quote Body */}

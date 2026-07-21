@@ -16,7 +16,7 @@ const INITIAL_QUOTES = [
     text: "The only way to do great work is to love what you do.",
     author: "Steve Jobs",
     role: "Tech Visionary",
-    category: "Motivasi",
+    categories: ["Motivasi", "Teknologi"],
     isFavorite: false,
     avatarGradient: "bg-gradient-to-br from-primary to-secondary",
   },
@@ -25,7 +25,7 @@ const INITIAL_QUOTES = [
     text: "Kesenjangan antara ide dan implementasi adalah di mana kegagalan paling sering terjadi.",
     author: "Ahmad Kasim",
     role: "Entrepreneur",
-    category: "Bisnis",
+    categories: ["Bisnis", "Motivasi"],
     isFavorite: true,
     avatarInitials: "AK",
   },
@@ -34,7 +34,7 @@ const INITIAL_QUOTES = [
     text: "Love is not about how many days, months, or years you have been together.",
     author: "Unknown Author",
     role: "Philosopher",
-    category: "Cinta",
+    categories: ["Cinta", "Filosofi"],
     isFavorite: false,
     avatarGradient: "bg-surface-container-highest",
   },
@@ -43,7 +43,7 @@ const INITIAL_QUOTES = [
     text: "Sesungguhnya bersama kesulitan ada kemudahan.",
     author: "Al-Insyirah: 6",
     role: "Holy Quran",
-    category: "Islami",
+    categories: ["Islami", "Motivasi"],
     isFavorite: false,
     avatarInitials: "QS",
   },
@@ -52,7 +52,7 @@ const INITIAL_QUOTES = [
     text: "Jangan pernah menyerah, karena hal-hal besar butuh waktu.",
     author: "Motivator X",
     role: "Speaker",
-    category: "Motivasi",
+    categories: ["Motivasi"],
     isFavorite: false,
     avatarGradient: "bg-tertiary-fixed-dim",
   },
@@ -61,7 +61,7 @@ const INITIAL_QUOTES = [
     text: "The unexamined life is not worth living.",
     author: "Socrates",
     role: "Greek Philosopher",
-    category: "Filosofi",
+    categories: ["Filosofi"],
     isFavorite: false,
     avatarGradient: "bg-secondary-fixed",
   },
@@ -74,18 +74,28 @@ export default function QuotesPage() {
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "list"
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Filter logic
+  // Helper to extract categories array safely
+  const getCategories = (q) =>
+    Array.isArray(q.categories)
+      ? q.categories
+      : q.category
+      ? [q.category]
+      : [];
+
+  // Filter logic for multi-category matching
   const filteredQuotes = quotes.filter((q) => {
+    const cats = getCategories(q);
+
     const matchesCategory =
       activeCategory === "Semua" ||
-      q.category.toLowerCase() === activeCategory.toLowerCase();
+      cats.some((c) => c.toLowerCase() === activeCategory.toLowerCase());
 
     const query = searchQuery.toLowerCase().trim();
     const matchesSearch =
       !query ||
       q.text.toLowerCase().includes(query) ||
       q.author.toLowerCase().includes(query) ||
-      q.category.toLowerCase().includes(query) ||
+      cats.some((c) => c.toLowerCase().includes(query)) ||
       (q.role && q.role.toLowerCase().includes(query));
 
     return matchesCategory && matchesSearch;
@@ -109,17 +119,22 @@ export default function QuotesPage() {
     const newText = prompt("Masukkan teks quote baru:");
     if (!newText) return;
     const newAuthor = prompt("Masukkan nama author:") || "Anonymous";
-    const newCategory =
+    const rawCategories =
       prompt(
-        "Masukkan kategori (Motivasi, Bisnis, Islami, Cinta, Filosofi):",
+        "Masukkan kategori (dapat lebih dari satu dipisah koma, contoh: Motivasi, Bisnis):"
       ) || "Motivasi";
+
+    const parsedCategories = rawCategories
+      .split(",")
+      .map((c) => c.trim())
+      .filter(Boolean);
 
     const newQuote = {
       id: Date.now(),
       text: newText,
       author: newAuthor,
       role: "Contributor",
-      category: newCategory,
+      categories: parsedCategories.length ? parsedCategories : ["Motivasi"],
       isFavorite: false,
       avatarInitials: newAuthor.slice(0, 2).toUpperCase(),
     };

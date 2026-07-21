@@ -26,10 +26,20 @@ export default function QuoteCard({ quote, onToggleFavorite }) {
         <div className="flex justify-between items-center">
           <div>
             <p className="font-label-md text-sm text-primary">— {quote.author}</p>
-            <div className="mt-2 flex gap-2">
-              <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] uppercase font-bold rounded-full tracking-wider">
-                {quote.category}
-              </span>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {(Array.isArray(quote.categories)
+                ? quote.categories
+                : quote.category
+                ? [quote.category]
+                : []
+              ).map((cat, idx) => (
+                <span
+                  key={idx}
+                  className="px-3 py-1 bg-primary/10 text-primary text-[10px] uppercase font-bold rounded-full tracking-wider"
+                >
+                  {cat}
+                </span>
+              ))}
             </div>
           </div>
           <div className="flex gap-2">

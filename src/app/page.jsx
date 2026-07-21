@@ -17,35 +17,85 @@ export default function Home() {
       id: 1,
       text: "Hidup adalah perjalanan yang harus dinikmati.",
       author: "Unknown",
-      category: "Life",
+      categories: ["Filosofi", "Motivasi"],
       isFavorite: false,
-      delay: "0.7s"
+      delay: "0.7s",
     },
     {
       id: 2,
       text: "Kesuksesan dimulai dari langkah kecil.",
       author: "Business",
-      category: "Motivation",
+      categories: ["Bisnis", "Motivasi"],
       isFavorite: true,
-      delay: "0.8s"
-    }
+      delay: "0.8s",
+    },
   ]);
 
   const stats = [
-    { label: "Total Quotes", value: 156, icon: Quote, colorClass: "bg-primary/10 text-primary", delay: "0.2s" },
-    { label: "Kategori", value: 8, icon: Layers, colorClass: "bg-tertiary/10 text-tertiary", delay: "0.3s" },
-    { label: "Favorit", value: 23, icon: Heart, colorClass: "bg-error/10 text-error", delay: "0.4s", isFilledHeart: true },
-    { label: "Scanned", value: 12, icon: ScanText, colorClass: "bg-secondary/10 text-secondary", delay: "0.5s" }
+    {
+      label: "Total Quotes",
+      value: 156,
+      icon: Quote,
+      colorClass: "bg-primary/10 text-primary",
+      delay: "0.2s",
+    },
+    {
+      label: "Kategori",
+      value: 8,
+      icon: Layers,
+      colorClass: "bg-tertiary/10 text-tertiary",
+      delay: "0.3s",
+    },
+    {
+      label: "Favorit",
+      value: 23,
+      icon: Heart,
+      colorClass: "bg-error/10 text-error",
+      delay: "0.4s",
+      isFilledHeart: true,
+    },
+    {
+      label: "Scanned",
+      value: 12,
+      icon: ScanText,
+      colorClass: "bg-secondary/10 text-secondary",
+      delay: "0.5s",
+    },
   ];
 
   const categories = [
-    { name: "Motivasi", count: 45, color: "bg-primary", shadow: "shadow-[0_0_8px_#c0c1ff]", borderHover: "hover:border-primary/40", textHover: "group-hover:text-primary" },
-    { name: "Islami", count: 32, color: "bg-tertiary", shadow: "shadow-[0_0_8px_#ffb783]", borderHover: "hover:border-tertiary/40", textHover: "group-hover:text-tertiary" },
-    { name: "Cinta", count: 28, color: "bg-secondary", shadow: "shadow-[0_0_8px_#d0bcff]", borderHover: "hover:border-secondary/40", textHover: "group-hover:text-secondary" }
+    {
+      name: "Motivasi",
+      count: 45,
+      color: "bg-primary",
+      shadow: "shadow-[0_0_8px_#c0c1ff]",
+      borderHover: "hover:border-primary/40",
+      textHover: "group-hover:text-primary",
+    },
+    {
+      name: "Islami",
+      count: 32,
+      color: "bg-tertiary",
+      shadow: "shadow-[0_0_8px_#ffb783]",
+      borderHover: "hover:border-tertiary/40",
+      textHover: "group-hover:text-tertiary",
+    },
+    {
+      name: "Cinta",
+      count: 28,
+      color: "bg-secondary",
+      shadow: "shadow-[0_0_8px_#d0bcff]",
+      borderHover: "hover:border-secondary/40",
+      textHover: "group-hover:text-secondary",
+    },
   ];
 
   const toggleFavorite = (id) => {
-    setQuotes(quotes.map(q => q.id === id ? { ...q, isFavorite: !q.isFavorite } : q));
+    setQuotes(
+      quotes.map((q) =>
+        q.id === id ? { ...q, isFavorite: !q.isFavorite } : q,
+      ),
+    );
   };
 
   return (
@@ -59,13 +109,17 @@ export default function Home() {
       {/* Main Content Area */}
       <main className="lg:ml-[260px] pt-24 pb-32 lg:pb-12 px-gutter min-h-screen">
         <div className="max-w-[1200px] mx-auto px-4">
-          
           {/* Greeting Banner */}
-          <section className="mb-10 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+          <section
+            className="mb-10 animate-fade-in"
+            style={{ animationDelay: "0.1s" }}
+          >
             <h2 className="font-display-lg text-3xl md:text-5xl font-extrabold text-on-surface tracking-tight">
               Selamat pagi, Ahmad! 👋
             </h2>
-            <p className="text-on-surface-variant font-body-lg text-lg mt-2">Mari temukan inspirasi baru hari ini.</p>
+            <p className="text-on-surface-variant font-body-lg text-lg mt-2">
+              Mari temukan inspirasi baru hari ini.
+            </p>
           </section>
 
           {/* Key Statistics Grid */}
