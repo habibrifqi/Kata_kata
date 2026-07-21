@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { Search, Bell } from "lucide-react";
 
-export default function Header({ userAvatar, searchPlaceholder = "Search quotes..." }) {
+export default function Header({
+  userAvatar,
+  searchPlaceholder = "Search quotes...",
+  searchValue,
+  onSearchChange
+}) {
   const [searchFocused, setSearchFocused] = useState(false);
 
   return (
@@ -11,13 +16,17 @@ export default function Header({ userAvatar, searchPlaceholder = "Search quotes.
       <h2 className="font-headline-md text-2xl font-bold text-primary lg:hidden ml-4">KataKata</h2>
       
       <div className="relative max-w-md w-full hidden md:block">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+        <Search className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
+          searchFocused ? "text-primary" : "text-on-surface-variant"
+        }`} />
         <input
           className={`w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-on-surface transition-all duration-300 font-label-md text-sm outline-none ${
             searchFocused ? "ring-2 ring-primary/50 shadow-[0_0_12px_rgba(99,102,241,0.3)]" : ""
           }`}
           placeholder={searchPlaceholder}
           type="text"
+          value={searchValue ?? ""}
+          onChange={(e) => onSearchChange?.(e.target.value)}
           onFocus={() => setSearchFocused(true)}
           onBlur={() => setSearchFocused(false)}
         />

@@ -14,21 +14,29 @@ dashboard_kata_kata/
 │   │   ├── favicon.ico
 │   │   ├── globals.css     # Design Tokens, Glassmorphism, Animation & Tailwind v4
 │   │   ├── layout.jsx      # Root Layout (Fonts & Head metadata)
-│   │   └── page.jsx        # Main Dashboard Page (Container Component)
+│   │   ├── page.jsx        # Main Dashboard Page (Route: /)
+│   │   └── quotes/         # Halaman Koleksi Quotes
+│   │       └── page.jsx    # Quotes Collection Page (Route: /quotes)
 │   │
 │   └── components/         # Atomic & Domain-driven Component Architecture
 │       ├── layout/         # Layout Wrapper Components
-│       │   ├── Header.jsx       # Top navigation header dengan pencarian & user avatar
-│       │   ├── Sidebar.jsx      # Desktop navigation sidebar dengan indikator aktif
+│       │   ├── Header.jsx       # Top navigation header dengan pencarian real-time & user avatar
+│       │   ├── Sidebar.jsx      # Desktop navigation sidebar dengan routing Link
 │       │   └── MobileNav.jsx    # Bottom navigation bar khusus tampilan mobile
 │       │
-│       ├── dashboard/      # Business Domain Components untuk Dashboard
+│       ├── dashboard/      # Business Domain Components untuk Dashboard Utama
 │       │   ├── StatCard.jsx          # Kartu statistik individual dengan efek mouse-glow & CountUp
 │       │   ├── StatsGrid.jsx         # Grid layout container untuk statistik
-│       │   ├── QuoteCard.jsx         # Kartu quote individual dengan aksi favorit & share
+│       │   ├── QuoteCard.jsx         # Kartu quote ringkas untuk dashboard
 │       │   ├── RecentQuotes.jsx      # Section daftar quote terbaru
 │       │   ├── PopularCategories.jsx # Section pill daftar kategori populer
 │       │   └── AddQuoteFab.jsx       # Floating Action Button (FAB) tambah quote baru
+│       │
+│       ├── quotes/         # Business Domain Components untuk Halaman /quotes
+│       │   ├── CategoryFilters.jsx   # Filter pill horizontal kategori
+│       │   ├── QuoteCard.jsx         # Kartu quote lengkap (Mode Grid & List view, Favorite, Edit, Delete)
+│       │   ├── EmptyState.jsx        # Placeholder saat pencarian 0 hasil
+│       │   └── Pagination.jsx        # Bar navigasi halaman paginasi
 │       │
 │       └── ui/             # Generic / Reusable Design System UI Elements
 │           └── CountUp.jsx           # Animasikan angka naik dari 0 saat di-scroll
@@ -42,19 +50,17 @@ dashboard_kata_kata/
 
 ## 🧩 Component Breakdown & Design System
 
-### 1. `src/components/layout/`
-- **`Sidebar.jsx`**: Menangani sistem navigasi desktop. Menggunakan warna `bg-surface/80` dengan efek `backdrop-blur-xl`.
-- **`Header.jsx`**: Bar navigasi atas sticky dengan input pencarian interaktif, notifikasi, dan avatar pengguna.
-- **`MobileNav.jsx`**: Navigasi khusus layar smartphone (layar `< lg`) yang ditempatkan di bagian bawah viewport.
+### 1. Route `/` (Dashboard)
+- **`Sidebar.jsx`**: Sistem navigasi utama desktop dengan dukungan `Link` Next.js (`activeMenu="Dashboard"`).
+- **`Header.jsx`**: Bar navigasi atas sticky dengan input pencarian.
+- **`StatsGrid.jsx` & `StatCard.jsx`**: Menampilkan statistik utama dengan efek *CountUp animation*.
+- **`RecentQuotes.jsx` & `PopularCategories.jsx`**: Menampilkan kurasi quote terbaru dan kategori populer.
 
-### 2. `src/components/dashboard/`
-- **`StatCard.jsx`**: Komponen stat individual berpola glassmorphism (`glass-surface` & `glass-card-hover`). Memiliki kalkulasi `--mouse-x` dan `--mouse-y` untuk memberikan efek visual glow saat kursor melintas.
-- **`QuoteCard.jsx`**: Menampilkan teks quote, nama pembuat/kategori, tombol toggle *favorite*, dan tombol *share*.
-- **`PopularCategories.jsx`**: Menampilkan kategori dengan aksen warna dan badge jumlah quote.
-- **`AddQuoteFab.jsx`**: Tombol melayang (*Floating Action Button*) di pojok kanan bawah.
-
-### 3. `src/components/ui/`
-- **`CountUp.jsx`**: Menggunakan `IntersectionObserver` agar angka statistik dihitung naik secara konstan ketika card masuk ke dalam layar pengguna.
+### 2. Route `/quotes` (Quotes Collection)
+- **`CategoryFilters.jsx`**: Menampilkan filter kategori (Semua, Motivasi, Islami, Cinta, Bisnis, Teknologi, Filosofi).
+- **`QuoteCard.jsx`**: Mendukung tampilan **Grid View** dan **List View** dengan aksi interaktif (Favorite, Edit, Delete).
+- **`EmptyState.jsx`**: Ditampilkan saat hasil pencarian atau filter kategori tidak menghasilkan quote apapun.
+- **`Pagination.jsx`**: Navigasi perpindahan halaman (*previous, 1..12, next*).
 
 ---
 

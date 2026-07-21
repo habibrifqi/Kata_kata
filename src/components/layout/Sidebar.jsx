@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   LayoutDashboard,
   Quote,
@@ -10,19 +11,21 @@ import {
 } from "lucide-react";
 
 export const DEFAULT_NAV_ITEMS = [
-  { name: "Dashboard", icon: LayoutDashboard },
-  { name: "Quotes", icon: Quote },
-  { name: "Categories", icon: Layers },
-  { name: "Scan Quote", icon: ScanText }
+  { name: "Dashboard", icon: LayoutDashboard, href: "/" },
+  { name: "Quotes", icon: Quote, href: "/quotes" },
+  { name: "Categories", icon: Layers, href: "#categories" },
+  { name: "Scan Quote", icon: ScanText, href: "#scan" }
 ];
 
-export default function Sidebar({ activeMenu, setActiveMenu, navItems = DEFAULT_NAV_ITEMS }) {
+export default function Sidebar({ activeMenu, navItems = DEFAULT_NAV_ITEMS }) {
   return (
     <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-screen w-[260px] bg-surface/80 backdrop-blur-xl border-r border-outline-variant/20 z-50 p-6">
       {/* Brand Header */}
       <div className="mb-10">
-        <h1 className="font-display-lg text-4xl font-extrabold text-primary tracking-tight">KataKata</h1>
-        <p className="text-on-surface-variant font-label-md text-sm mt-1">Curation Hub</p>
+        <Link href="/">
+          <h1 className="font-display-lg text-4xl font-extrabold text-primary tracking-tight">KataKata</h1>
+          <p className="text-on-surface-variant font-label-md text-sm mt-1">Curation Hub</p>
+        </Link>
       </div>
 
       {/* Main Navigation */}
@@ -31,9 +34,9 @@ export default function Sidebar({ activeMenu, setActiveMenu, navItems = DEFAULT_
           const Icon = item.icon;
           const isActive = activeMenu === item.name;
           return (
-            <button
+            <Link
               key={item.name}
-              onClick={() => setActiveMenu(item.name)}
+              href={item.href || "#"}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
                 isActive
                   ? "bg-secondary-container/30 text-primary border-l-4 border-primary shadow-[0_0_15px_rgba(192,193,255,0.3)]"
@@ -42,7 +45,7 @@ export default function Sidebar({ activeMenu, setActiveMenu, navItems = DEFAULT_
             >
               <Icon className="w-5 h-5" />
               <span className="font-label-md text-sm font-semibold">{item.name}</span>
-            </button>
+            </Link>
           );
         })}
       </nav>
@@ -58,7 +61,7 @@ export default function Sidebar({ activeMenu, setActiveMenu, navItems = DEFAULT_
           <Settings className="w-5 h-5" />
           <span className="font-label-md text-sm font-semibold">Settings</span>
         </a>
-        <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 transition-all duration-300" href="#logout">
+        <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:text-error-container transition-colors" href="#logout">
           <LogOut className="w-5 h-5" />
           <span className="font-label-md text-sm font-semibold">Logout</span>
         </a>
