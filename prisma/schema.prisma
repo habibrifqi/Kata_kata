@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Note: Prisma v7+ — connection URLs are configured in prisma.config.ts
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// Model: Category
+// Menyimpan kategori kata-kata / kutipan
+// ============================================================
+model Category {
+  id          Int             @id @default(autoincrement())
+  name        String          @unique
+  colorBg     String          @default("bg-primary")
+  glowColor   String          @default("rgba(192, 193, 255, 0.6)")
+  quotesCount Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  quotes      QuoteCategory[]
+
+  @@map("categories")
+}
+
+// ============================================================
+// Model: Quote
+// Menyimpan kutipan / kata-kata inspiratif
+// ============================================================
+model Quote {
+  id             Int             @id @default(autoincrement())
+  text           String
+  author         String
+  role           String?
+  isFavorite     Boolean         @default(false)
+  avatarGradient String?
+  avatarInitials String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  categories     QuoteCategory[]
+
+  @@map("quotes")
+}
+
+// ============================================================
+// Model: QuoteCategory
+// Tabel relasi many-to-many antara Quote dan Category
+// ============================================================
+model QuoteCategory {
+  quoteId    Int
+  categoryId Int
+  quote      Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([quoteId, categoryId])
+  @@map("quote_categories")
+}
