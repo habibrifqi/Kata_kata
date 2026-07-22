@@ -1,5 +1,23 @@
 "use client";
 
+function formatDate(dateStr) {
+  if (!dateStr) return "-";
+  if (typeof dateStr === "string" && !dateStr.includes("T") && !dateStr.includes("-")) {
+    return dateStr;
+  }
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
 export default function CategoryList({ categories, onEdit, onDelete }) {
   if (!categories || categories.length === 0) {
     return (
@@ -26,28 +44,32 @@ export default function CategoryList({ categories, onEdit, onDelete }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-outline-variant/10">
-            {categories.map((cat) => (
-              <tr key={cat.id} className="hover:bg-surface-variant/30 transition-colors">
-                <td className="px-4 sm:px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-3 h-3 rounded-full shrink-0 ${cat.colorBg || "bg-primary"}`}
-                      style={{
-                        boxShadow: `0 0 8px ${cat.glowColor || "rgba(192,193,255,0.6)"}`,
-                      }}
-                    />
-                    <span className="font-body-md text-body-md font-semibold text-on-surface">
-                      {cat.name}
-                    </span>
-                  </div>
-                </td>
+            {categories.map((cat) => {
+              const isHex = cat.colorBg && cat.colorBg.startsWith("#");
+              return (
+                <tr key={cat.id} className="hover:bg-surface-variant/30 transition-colors">
+                  <td className="px-4 sm:px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-3 h-3 rounded-full shrink-0 ${!isHex ? (cat.colorBg || "bg-primary") : ""}`}
+                        style={{
+                          backgroundColor: isHex ? cat.colorBg : undefined,
+                          boxShadow: `0 0 8px ${cat.glowColor || "rgba(192,193,255,0.6)"}`,
+                        }}
+                      />
+                      <span className="font-body-md text-body-md font-semibold text-on-surface">
+                        {cat.name}
+                      </span>
+                    </div>
+                  </td>
+
                 <td className="px-4 sm:px-6 py-4">
                   <span className="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full whitespace-nowrap">
                     {cat.quotesCount} <span className="text-[10px] opacity-60">quotes</span>
                   </span>
                 </td>
                 <td className="px-4 sm:px-6 py-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">
-                  {cat.updatedAt}
+                  {formatDate(cat.updatedAt)}
                 </td>
                 <td className="px-4 sm:px-6 py-4 text-right whitespace-nowrap">
                   <div className="flex justify-end gap-1 sm:gap-2">
@@ -70,10 +92,13 @@ export default function CategoryList({ categories, onEdit, onDelete }) {
                   </div>
                 </td>
               </tr>
-            ))}
+            );
+          })}
           </tbody>
+
         </table>
       </div>
     </div>
   );
 }
+

@@ -13,9 +13,36 @@ export const PRESET_COLORS = [
   { id: "rose", bgClass: "bg-rose-400", glow: "rgba(251, 113, 133, 0.4)" },
 ];
 
+export function hexToRgba(hex, alpha = 0.4) {
+  if (!hex || !hex.startsWith("#")) return "rgba(192, 193, 255, 0.4)";
+  let c = hex.substring(1);
+  if (c.length === 3) {
+    c = c.split("").map((x) => x + x).join("");
+  }
+  if (c.length !== 6) return "rgba(192, 193, 255, 0.4)";
+  const num = parseInt(c, 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export default function CategoryForm({ onSave }) {
   const [name, setName] = useState("");
   const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
+  const [customHex, setCustomHex] = useState("#c0c1ff");
+
+  const isCustomSelected = selectedColor.id === "custom";
+
+  const handleCustomColorChange = (hexValue) => {
+    setCustomHex(hexValue);
+    setSelectedColor({
+      id: "custom",
+      bgClass: hexValue,
+      glow: hexToRgba(hexValue, 0.4),
+      isCustom: true,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,11 +56,13 @@ export default function CategoryForm({ onSave }) {
 
     setName("");
     setSelectedColor(PRESET_COLORS[0]);
+    setCustomHex("#c0c1ff");
   };
 
   const handleReset = () => {
     setName("");
     setSelectedColor(PRESET_COLORS[0]);
+    setCustomHex("#c0c1ff");
   };
 
   return (
@@ -64,10 +93,17 @@ export default function CategoryForm({ onSave }) {
           </div>
 
           <div className="space-y-3 sm:space-y-4">
-            <label className="font-label-md text-label-md text-on-surface-variant block">
-              Pilih Label Warna
+            <label className="font-label-md text-label-md text-on-surface-variant flex items-center justify-between">
+              <span>Pilih Label Warna</span>
+              {isCustomSelected && (
+                <span className="text-xs text-primary font-mono font-normal">
+                  {customHex.toUpperCase()}
+                </span>
+              )}
             </label>
-            <div className="flex flex-wrap gap-3 sm:gap-4">
+
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              {/* Preset Color Palette */}
               {PRESET_COLORS.map((c) => {
                 const isSelected = selectedColor.id === c.id;
                 return (
@@ -85,6 +121,30 @@ export default function CategoryForm({ onSave }) {
                   />
                 );
               })}
+
+              {/* Custom Color Input Picker */}
+              <div
+                className={`relative w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer border ${
+                  isCustomSelected
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-[#0a0e1a] scale-110 border-primary"
+                    : "border-outline-variant/50 hover:border-primary/50 opacity-90 hover:opacity-100"
+                }`}
+                style={{
+                  backgroundColor: isCustomSelected ? customHex : "transparent",
+                  boxShadow: isCustomSelected ? `0 0 12px ${hexToRgba(customHex, 0.6)}` : undefined,
+                }}
+                title="Pilih Warna Custom"
+              >
+                <input
+                  type="color"
+                  value={customHex}
+                  onChange={(e) => handleCustomColorChange(e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full"
+                />
+                <span className={`material-symbols-outlined text-base pointer-events-none ${isCustomSelected ? "text-slate-950 font-bold" : "text-on-surface-variant"}`}>
+                  palette
+                </span>
+              </div>
             </div>
           </div>
 
@@ -108,3 +168,4 @@ export default function CategoryForm({ onSave }) {
     </div>
   );
 }
+

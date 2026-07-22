@@ -1,24 +1,49 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PRESET_COLORS } from "./CategoryForm";
+import { PRESET_COLORS, hexToRgba } from "./CategoryForm";
 
 export default function CategoryModal({ isOpen, onClose, onSave, category = null }) {
   const [name, setName] = useState("");
   const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
+  const [customHex, setCustomHex] = useState("#c0c1ff");
+
+  const isCustomSelected = selectedColor.id === "custom";
 
   useEffect(() => {
     if (category) {
       setName(category.name || "");
-      const matched = PRESET_COLORS.find((c) => c.bgClass === category.colorBg) || PRESET_COLORS[0];
-      setSelectedColor(matched);
+      if (category.colorBg && category.colorBg.startsWith("#")) {
+        const hex = category.colorBg;
+        setCustomHex(hex);
+        setSelectedColor({
+          id: "custom",
+          bgClass: hex,
+          glow: category.glowColor || hexToRgba(hex, 0.4),
+          isCustom: true,
+        });
+      } else {
+        const matched = PRESET_COLORS.find((c) => c.bgClass === category.colorBg) || PRESET_COLORS[0];
+        setSelectedColor(matched);
+      }
     } else {
       setName("");
       setSelectedColor(PRESET_COLORS[0]);
+      setCustomHex("#c0c1ff");
     }
   }, [category, isOpen]);
 
   if (!isOpen) return null;
+
+  const handleCustomColorChange = (hexValue) => {
+    setCustomHex(hexValue);
+    setSelectedColor({
+      id: "custom",
+      bgClass: hexValue,
+      glow: hexToRgba(hexValue, 0.4),
+      isCustom: true,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,10 +94,17 @@ export default function CategoryModal({ isOpen, onClose, onSave, category = null
           </div>
 
           <div className="space-y-2">
-            <label className="font-label-md text-label-md text-on-surface-variant block">
-              Warna Tema
+            <label className="font-label-md text-label-md text-on-surface-variant flex items-center justify-between">
+              <span>Warna Tema</span>
+              {isCustomSelected && (
+                <span className="text-xs text-primary font-mono font-normal">
+                  {customHex.toUpperCase()}
+                </span>
+              )}
             </label>
+
             <div className="flex gap-3 items-center flex-wrap py-1">
+              {/* Presets */}
               {PRESET_COLORS.map((c) => {
                 const isSelected = selectedColor.id === c.id;
                 return (
@@ -90,6 +122,30 @@ export default function CategoryModal({ isOpen, onClose, onSave, category = null
                   />
                 );
               })}
+
+              {/* Custom Color Input */}
+              <div
+                className={`relative w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer border ${
+                  isCustomSelected
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-110 shadow-lg border-primary"
+                    : "border-outline-variant/50 hover:border-primary/50 opacity-60 hover:opacity-100"
+                }`}
+                style={{
+                  backgroundColor: isCustomSelected ? customHex : "transparent",
+                  boxShadow: isCustomSelected ? `0 0 12px ${hexToRgba(customHex, 0.6)}` : undefined,
+                }}
+                title="Pilih Warna Custom"
+              >
+                <input
+                  type="color"
+                  value={customHex}
+                  onChange={(e) => handleCustomColorChange(e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full"
+                />
+                <span className={`material-symbols-outlined text-base pointer-events-none ${isCustomSelected ? "text-slate-950 font-bold" : "text-on-surface-variant"}`}>
+                  palette
+                </span>
+              </div>
             </div>
           </div>
 
@@ -113,3 +169,4 @@ export default function CategoryModal({ isOpen, onClose, onSave, category = null
     </div>
   );
 }
+
