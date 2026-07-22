@@ -7,7 +7,7 @@ export default function MobileNav({ activeMenu = "Categories" }) {
     { name: "Home", icon: "home", href: "/" },
     { name: "Quotes", icon: "format_quote", href: "/quotes" },
     { name: "Categories", icon: "category", href: "/categories" },
-    { name: "Profile", icon: "person", href: "#profile" },
+    { name: "Authors", icon: "person", href: "/authors" },
   ];
 
   return (
