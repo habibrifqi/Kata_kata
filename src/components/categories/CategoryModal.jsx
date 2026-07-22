@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
 import { PRESET_COLORS } from "./CategoryForm";
 
 export default function CategoryModal({ isOpen, onClose, onSave, category = null }) {
@@ -38,31 +37,31 @@ export default function CategoryModal({ isOpen, onClose, onSave, category = null
   };
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in duration-200">
-      <div className="glass-surface w-full max-w-md p-8 rounded-3xl shadow-2xl border border-outline-variant/30 relative animate-in zoom-in-95 duration-200">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="font-headline-md text-2xl font-bold text-on-surface">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100] flex items-center justify-center p-gutter animate-in fade-in duration-200">
+      <div className="glass-surface w-full max-w-md p-8 rounded-3xl shadow-2xl animate-in zoom-in duration-300 relative">
+        <div className="flex justify-between items-start mb-6">
+          <h2 className="font-headline-md text-headline-md text-on-surface">
             {category ? "Edit Kategori" : "Tambah Kategori"}
           </h2>
           <button
             onClick={onClose}
-            className="text-on-surface-variant hover:text-error transition-colors p-1 rounded-lg hover:bg-surface-variant/40 cursor-pointer"
+            className="text-on-surface-variant hover:text-error transition-colors p-1 rounded-lg hover:bg-surface-variant/30 cursor-pointer"
             aria-label="Tutup modal"
           >
-            <X className="w-5 h-5" />
+            <span className="material-symbols-outlined">close</span>
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="font-label-md text-xs font-semibold text-on-surface-variant uppercase tracking-wider block">
-              Nama Kategori
+            <label className="font-label-md text-label-md text-on-surface-variant block">
+              Nama
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nama kategori..."
+              placeholder="Nama Kategori"
               className="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-on-surface outline-none focus:ring-2 focus:ring-primary/40 transition-all text-sm"
               autoFocus
               required
@@ -70,10 +69,10 @@ export default function CategoryModal({ isOpen, onClose, onSave, category = null
           </div>
 
           <div className="space-y-2">
-            <label className="font-label-md text-xs font-semibold text-on-surface-variant uppercase tracking-wider block">
+            <label className="font-label-md text-label-md text-on-surface-variant block">
               Warna Tema
             </label>
-            <div className="flex flex-wrap gap-3 items-center py-2">
+            <div className="flex gap-3 items-center flex-wrap py-1">
               {PRESET_COLORS.map((c) => {
                 const isSelected = selectedColor.id === c.id;
                 return (
@@ -84,9 +83,10 @@ export default function CategoryModal({ isOpen, onClose, onSave, category = null
                     className={`w-8 h-8 rounded-full ${c.bgClass} transition-all cursor-pointer ${
                       isSelected
                         ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-110 shadow-lg"
-                        : "opacity-60 hover:opacity-100 hover:scale-105"
+                        : "opacity-50 hover:opacity-100 hover:scale-105"
                     }`}
-                    aria-label={`Pilih warna ${c.id}`}
+                    style={{ boxShadow: isSelected ? `0 0 10px ${c.glow}` : undefined }}
+                    aria-label={`Warna ${c.id}`}
                   />
                 );
               })}
@@ -97,13 +97,13 @@ export default function CategoryModal({ isOpen, onClose, onSave, category = null
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 rounded-xl border border-outline-variant/40 text-on-surface hover:bg-surface-variant/30 transition-all font-label-md text-sm font-semibold cursor-pointer"
+              className="flex-1 py-3 rounded-xl border border-outline-variant text-on-surface hover:bg-surface-variant/30 transition-all font-label-md cursor-pointer"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="flex-1 py-3 rounded-xl bg-primary text-on-primary font-label-md text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary-container transition-all cursor-pointer"
+              className="flex-1 py-3 rounded-xl bg-primary text-on-primary font-label-md shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
             >
               {category ? "Perbarui" : "Simpan"}
             </button>
