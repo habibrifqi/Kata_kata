@@ -14,24 +14,24 @@ export default function CategoryList({ categories, onEdit, onDelete }) {
   }
 
   return (
-    <div className="glass-surface rounded-2xl overflow-hidden mb-12">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+    <div className="glass-surface rounded-2xl overflow-hidden mb-12 shadow-lg">
+      <div className="overflow-x-auto w-full">
+        <table className="w-full text-left border-collapse min-w-[550px]">
           <thead>
             <tr className="border-b border-outline-variant/10">
-              <th className="px-6 py-4 font-label-md text-label-md text-on-surface-variant">Topik & Warna</th>
-              <th className="px-6 py-4 font-label-md text-label-md text-on-surface-variant">Jumlah Kutipan</th>
-              <th className="px-6 py-4 font-label-md text-label-md text-on-surface-variant">Terakhir Diperbarui</th>
-              <th className="px-6 py-4 font-label-md text-label-md text-on-surface-variant text-right">Aksi</th>
+              <th className="px-4 sm:px-6 py-4 font-label-md text-label-md text-on-surface-variant">Topik & Warna</th>
+              <th className="px-4 sm:px-6 py-4 font-label-md text-label-md text-on-surface-variant">Jumlah Kutipan</th>
+              <th className="px-4 sm:px-6 py-4 font-label-md text-label-md text-on-surface-variant">Terakhir Diperbarui</th>
+              <th className="px-4 sm:px-6 py-4 font-label-md text-label-md text-on-surface-variant text-right">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-outline-variant/10">
             {categories.map((cat) => (
               <tr key={cat.id} className="hover:bg-surface-variant/30 transition-colors">
-                <td className="px-6 py-5">
+                <td className="px-4 sm:px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-3 h-3 rounded-full ${cat.colorBg || "bg-primary"}`}
+                      className={`w-3 h-3 rounded-full shrink-0 ${cat.colorBg || "bg-primary"}`}
                       style={{
                         boxShadow: `0 0 8px ${cat.glowColor || "rgba(192,193,255,0.6)"}`,
                       }}
@@ -41,16 +41,16 @@ export default function CategoryList({ categories, onEdit, onDelete }) {
                     </span>
                   </div>
                 </td>
-                <td className="px-6 py-5">
-                  <span className="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">
+                <td className="px-4 sm:px-6 py-4">
+                  <span className="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full whitespace-nowrap">
                     {cat.quotesCount} <span className="text-[10px] opacity-60">quotes</span>
                   </span>
                 </td>
-                <td className="px-6 py-5 font-label-sm text-label-sm text-on-surface-variant">
+                <td className="px-4 sm:px-6 py-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">
                   {cat.updatedAt}
                 </td>
-                <td className="px-6 py-5 text-right">
-                  <div className="flex justify-end gap-2">
+                <td className="px-4 sm:px-6 py-4 text-right whitespace-nowrap">
+                  <div className="flex justify-end gap-1 sm:gap-2">
                     <button
                       onClick={() => onEdit(cat)}
                       className="p-2 rounded-lg hover:bg-secondary/10 text-secondary transition-all cursor-pointer"

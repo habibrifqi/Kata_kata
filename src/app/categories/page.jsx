@@ -195,7 +195,7 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-background text-on-surface font-sans">
+    <div className="flex min-h-screen bg-background text-on-surface font-sans overflow-x-hidden w-full">
       {/* Animated Shader Background */}
       <div className="fixed inset-0 z-0 pointer-events-none" />
 
@@ -203,16 +203,16 @@ export default function CategoriesPage() {
       <Sidebar activeMenu="Categories" />
 
       {/* Main Content Canvas */}
-      <main className="flex-1 lg:ml-[260px] pb-24 lg:pb-12 relative z-10 min-h-screen">
+      <main className="flex-1 lg:ml-[260px] pb-24 lg:pb-12 relative z-10 min-h-screen w-full max-w-full overflow-x-hidden">
         {/* TopNavBar */}
         <Header />
 
         {/* Page Content */}
-        <div className="mt-20 px-gutter max-w-container_max_width mx-auto">
+        <div className="mt-20 px-4 sm:px-6 md:px-gutter max-w-container_max_width mx-auto w-full">
           {/* Header Section */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-stack_lg gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-stack_lg gap-4">
             <div>
-              <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface font-extrabold">
+              <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface font-extrabold break-words">
                 Kelola Kategori
               </h1>
               <p className="font-body-md text-body-md text-on-surface-variant mt-1">
@@ -221,7 +221,7 @@ export default function CategoriesPage() {
             </div>
             <button
               onClick={handleOpenAddModal}
-              className="bg-primary-container text-on-primary-container px-6 py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-container/20 self-start cursor-pointer"
+              className="bg-primary-container text-on-primary-container px-5 py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-container/20 w-full sm:w-auto self-start sm:self-auto cursor-pointer"
             >
               <span className="material-symbols-outlined">add</span>
               <span>Tambah Kategori</span>

@@ -37,8 +37,8 @@ export default function CategoryModal({ isOpen, onClose, onSave, category = null
   };
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100] flex items-center justify-center p-gutter animate-in fade-in duration-200">
-      <div className="glass-surface w-full max-w-md p-8 rounded-3xl shadow-2xl animate-in zoom-in duration-300 relative">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200 overflow-y-auto">
+      <div className="glass-surface w-full max-w-md p-5 sm:p-8 rounded-3xl shadow-2xl animate-in zoom-in duration-300 relative my-auto">
         <div className="flex justify-between items-start mb-6">
           <h2 className="font-headline-md text-headline-md text-on-surface">
             {category ? "Edit Kategori" : "Tambah Kategori"}

@@ -2,8 +2,8 @@
 
 export default function CategorySearch({ value, onChange }) {
   return (
-    <div className="mb-6 flex justify-end">
-      <div className="flex items-center bg-surface-container-low/50 backdrop-blur-md px-4 py-2.5 rounded-xl border border-outline-variant/20 focus-within:ring-2 focus-within:ring-primary/40 transition-all w-full max-w-md shadow-lg">
+    <div className="mb-6 flex justify-start sm:justify-end">
+      <div className="flex items-center bg-surface-container-low/50 backdrop-blur-md px-4 py-2.5 rounded-xl border border-outline-variant/20 focus-within:ring-2 focus-within:ring-primary/40 transition-all w-full sm:max-w-md shadow-lg">
         <span className="material-symbols-outlined text-on-surface-variant text-sm select-none">
           search
         </span>

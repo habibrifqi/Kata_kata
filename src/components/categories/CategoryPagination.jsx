@@ -37,22 +37,22 @@ export default function CategoryPagination({ currentPage, totalPages, onPageChan
   const pages = getPageNumbers();
 
   return (
-    <div className="mt-12 flex items-center justify-center gap-2 mb-12">
+    <div className="mt-8 sm:mt-12 flex flex-wrap items-center justify-center gap-1 sm:gap-2 mb-12">
       {/* Previous Button */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-10 h-10 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
         aria-label="Halaman Sebelumnya"
       >
-        <span className="material-symbols-outlined">chevron_left</span>
+        <span className="material-symbols-outlined text-lg sm:text-xl">chevron_left</span>
       </button>
 
       {/* Page Numbers */}
       {pages.map((page, idx) => {
         if (page === "...") {
           return (
-            <span key={`ellipsis-${idx}`} className="text-outline-variant px-2 select-none">
+            <span key={`ellipsis-${idx}`} className="text-outline-variant px-1 select-none text-xs sm:text-sm">
               ...
             </span>
           );
@@ -63,7 +63,7 @@ export default function CategoryPagination({ currentPage, totalPages, onPageChan
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`w-10 h-10 flex items-center justify-center rounded-lg font-label-md transition-all cursor-pointer ${
+            className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg font-label-md text-xs sm:text-sm transition-all cursor-pointer ${
               isActive
                 ? "bg-primary text-on-primary shadow-lg shadow-primary/20 font-bold"
                 : "text-on-surface-variant hover:bg-surface-variant/50"
@@ -78,10 +78,10 @@ export default function CategoryPagination({ currentPage, totalPages, onPageChan
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-10 h-10 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
         aria-label="Halaman Selanjutnya"
       >
-        <span className="material-symbols-outlined">chevron_right</span>
+        <span className="material-symbols-outlined text-lg sm:text-xl">chevron_right</span>
       </button>
     </div>
   );

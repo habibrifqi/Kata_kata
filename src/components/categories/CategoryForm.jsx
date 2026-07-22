@@ -37,7 +37,7 @@ export default function CategoryForm({ onSave }) {
   };
 
   return (
-    <div className="glass-surface p-8 rounded-3xl relative overflow-hidden group">
+    <div className="glass-surface p-5 sm:p-8 rounded-3xl relative overflow-hidden group">
       <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700 pointer-events-none" />
 
       <div className="relative z-10">
@@ -48,8 +48,8 @@ export default function CategoryForm({ onSave }) {
           Mulai pengelompokkan koleksi kata-kata Anda hari ini.
         </p>
 
-        <form onSubmit={handleSubmit} onReset={handleReset} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
-          <div className="space-y-4">
+        <form onSubmit={handleSubmit} onReset={handleReset} className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-end">
+          <div className="space-y-3 sm:space-y-4">
             <label className="font-label-md text-label-md text-on-surface-variant block">
               Nama Kategori
             </label>
@@ -58,16 +58,16 @@ export default function CategoryForm({ onSave }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Contoh: Produktivitas, Spiritual..."
-              className="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary/40 outline-none transition-all"
+              className="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary/40 outline-none transition-all text-sm"
               required
             />
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <label className="font-label-md text-label-md text-on-surface-variant block">
               Pilih Label Warna
             </label>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               {PRESET_COLORS.map((c) => {
                 const isSelected = selectedColor.id === c.id;
                 return (
@@ -88,17 +88,17 @@ export default function CategoryForm({ onSave }) {
             </div>
           </div>
 
-          <div className="lg:col-span-2 flex justify-end gap-4 mt-4">
+          <div className="lg:col-span-2 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 mt-2 sm:mt-4">
             <button
               type="button"
               onClick={handleReset}
-              className="px-6 py-3 rounded-xl border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant/30 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant/30 transition-all cursor-pointer text-center"
             >
               Reset
             </button>
             <button
               type="submit"
-              className="px-10 py-3 rounded-xl bg-primary text-on-primary font-label-md text-label-md shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-8 sm:px-10 py-3 rounded-xl bg-primary text-on-primary font-label-md text-label-md shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-center"
             >
               Simpan Kategori
             </button>

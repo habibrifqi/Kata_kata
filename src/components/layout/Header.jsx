@@ -9,7 +9,7 @@ export default function Header({
   onSearchChange
 }) {
   return (
-    <header className="fixed top-0 right-0 z-40 bg-background/60 backdrop-blur-md flex justify-between items-center h-16 px-gutter lg:left-[260px] left-0 border-b border-outline-variant/10">
+    <header className="fixed top-0 right-0 z-40 bg-background/60 backdrop-blur-md flex justify-between items-center h-16 px-4 sm:px-6 lg:px-gutter lg:left-[260px] left-0 border-b border-outline-variant/10 max-w-full">
       <div className="flex items-center gap-4">
         <h2 className="font-headline-md text-headline-md font-bold text-primary lg:hidden">
           KataKata
