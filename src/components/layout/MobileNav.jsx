@@ -24,7 +24,12 @@ export default function MobileNav({ activeMenu = "Categories" }) {
                 : "text-on-surface-variant/70 hover:text-primary"
             }`}
           >
-            <span className="material-symbols-outlined">{item.icon}</span>
+            <span
+              className="material-symbols-outlined"
+              style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+            >
+              {item.icon}
+            </span>
             <span className="text-[10px] font-label-sm">{item.name}</span>
           </Link>
         );

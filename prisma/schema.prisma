@@ -11,6 +11,48 @@ datasource db {
 }
 
 // ============================================================
+// Model: User
+// Pemilik author (nullable untuk saat ini, belum ada auth)
+// 1 User bisa punya banyak Author
+// ============================================================
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authors   Author[]
+
+  @@map("users")
+}
+
+// ============================================================
+// Model: Author
+// Penulis / tokoh inspiratif dibalik kutipan
+// Berelasi ke User (nullable) dan bisa dipakai di Quote
+// ============================================================
+model Author {
+  id          Int      @id @default(autoincrement())
+  name        String
+  title       String?
+  bio         String?
+  avatarUrl   String?
+  tags        String[]
+  quotesCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relasi ke User (nullable - 1 user bisa punya banyak author)
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Relasi ke Quote (1 author bisa punya banyak quote)
+  quotes Quote[]
+
+  @@map("authors")
+}
+
+// ============================================================
 // Model: Category
 // Menyimpan kategori kata-kata / kutipan
 // ============================================================
@@ -30,21 +72,25 @@ model Category {
 // ============================================================
 // Model: Quote
 // Menyimpan kutipan / kata-kata inspiratif
+// 1 Quote dimiliki oleh 1 Author (nullable)
 // ============================================================
 model Quote {
-  id             Int             @id @default(autoincrement())
-  text           String
-  author         String
-  role           String?
-  isFavorite     Boolean         @default(false)
-  avatarGradient String?
-  avatarInitials String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  categories     QuoteCategory[]
+  id         Int             @id @default(autoincrement())
+  text       String
+  isFavorite Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  // Relasi ke Author (nullable — 1 author bisa punya banyak quote)
+  authorId     Int?
+  author       Author?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  // Relasi ke Category (many-to-many — category bersifat global)
+  categories QuoteCategory[]
 
   @@map("quotes")
 }
+
 
 // ============================================================
 // Model: QuoteCategory

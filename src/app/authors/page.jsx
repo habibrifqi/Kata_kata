@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import MobileNav from "@/components/layout/MobileNav";
@@ -9,79 +9,73 @@ import AuthorPagination from "@/components/authors/AuthorPagination";
 import AuthorModal from "@/components/authors/AuthorModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
-const INITIAL_AUTHORS = [
-  {
-    id: 1,
-    name: "Marcus Aurelius",
-    title: "Stoic Philosopher",
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBmyi6H02opu8mkBnYH1m_6jLmhfaY4MKMc7z9cYHNl8lgcOjcul7Lp2JIxPM0RXc6kcdF_EBl3Ov2YfvXquQw4UUXyVBwUFLsDtIjxCWnOSgZDXT67C1nbtAiMngn3DT318h0Fur4Cs9HynVUdsyPsOHkvjafTiwptrMl7Gx-_l2b5pQuooZAQuncaayDWfbZC3RBveggd7wqN9Uq37sdJUprkQg8a89-5UA0ktCEijhlztEXf_kxx999NAzQKVXU6Qsqa3VjGWtc",
-    bio: '"Waste no more time arguing about what a good man should be. Be one." A Roman emperor and Stoic philosopher who ruled from 161 to 180 AD.',
-    tags: ["Philosophy", "Stoicism", "Leadership"],
-    quotesCount: 124,
-  },
-  {
-    id: 2,
-    name: "Maya Angelou",
-    title: "Poet & Civil Rights Activist",
-    initials: "MK",
-    bio: '"I\'ve learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel."',
-    tags: ["Wisdom", "Inspiration", "Literature"],
-    quotesCount: 86,
-  },
-  {
-    id: 3,
-    name: "Steve Jobs",
-    title: "Co-founder of Apple Inc.",
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDIQUuUI05_0BahsLLuo8peBD_AeomkEsFLEJi1Xby62HaXJaafgf9f-sTClUdiRqsz8K83dT0Fc9gHDCsfURQ6VBG0jxEb1ClWoJ3k2KlNAl4Vuvz_Lvbw0HEdMbrbZ4kd2bEyMvSFTvH9hVw009pah7ivszPFF_X8CtET99k9zhIAIaKXYXJSZPELnWXjGMVH2fSiAcbt9EstekTsBBHy7zZZB77ycYIOm0T1gryAYetAaGqe0wPYVbgDuU34NDKjXE4DRLv6TCc",
-    bio: '"The only way to do great work is to love what you do. If you haven\'t found it yet, keep looking. Don\'t settle."',
-    tags: ["Innovation", "Creativity", "Design"],
-    quotesCount: 210,
-  },
-  {
-    id: 4,
-    name: "Eckhart Tolle",
-    title: "Spiritual Teacher",
-    initials: "ET",
-    bio: '"The primary cause of unhappiness is never the situation but your thoughts about it. Awareness is the greatest agent for change."',
-    tags: ["Spirituality", "Mindfulness", "Presence"],
-    quotesCount: 52,
-  },
-  {
-    id: 5,
-    name: "Virginia Woolf",
-    title: "English Writer",
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBO3f02LzB1jWpAz5Ge3lO_mxIxU4PBbxtRsv3TUA62ZJvgdYiVIo1Ab-zbCmu8kBE6ToQHnmzJlJRilVQYsIqUcFno9zfSEBnZE9HbZSJ1o8MKNVPMTrwR4XwAkCdJN5zW8Lgk6iczTSr6pMmyH5mRNfwQKZM6SsHoRATi73J53XKLRZgkdJgsIwTCSOO5F3YW0zeKhzVv8zqD8u2ueOurRh61LeBdr2_0HrWVlemaobAelTYTrEbuvt0j2Mv16inMOUEKmIVAYlY",
-    bio: '"For most of history, Anonymous was a woman." A pioneer in the use of stream of consciousness as a narrative device.',
-    tags: ["Literature", "Feminism", "Modernism"],
-    quotesCount: 41,
-  },
-];
+const ITEMS_PER_PAGE = 10;
 
 export default function AuthorsPage() {
-  const [authors, setAuthors] = useState(INITIAL_AUTHORS);
+  const [authors, setAuthors] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [toast, setToast] = useState(null);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAuthor, setEditingAuthor] = useState(null);
 
   // Delete Confirmation State
-  const [deletingAuthorId, setDeletingAuthorId] = useState(null);
+  const [deletingAuthor, setDeletingAuthor] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Filtered Authors
-  const filteredAuthors = authors.filter(
-    (a) =>
-      a.name.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
-      a.title.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
-      a.bio.toLowerCase().includes(searchQuery.toLowerCase().trim())
-  );
+  // ─── Toast Helper ────────────────────────────────────────────────────────────
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3500);
+  };
 
-  // Handlers
+  // ─── Fetch Authors from API ───────────────────────────────────────────────────
+  const fetchAuthors = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        pageSize: String(ITEMS_PER_PAGE),
+        ...(searchQuery.trim() ? { search: searchQuery.trim() } : {}),
+      });
+
+      const res = await fetch(`/api/authors?${params.toString()}`);
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || "Gagal mengambil data author dari server");
+      }
+
+      setAuthors(result.data || []);
+      setTotalItems(result.total ?? 0);
+      setTotalPages(result.totalPages ?? 1);
+    } catch (err) {
+      console.error("[GET /api/authors Error]:", err);
+      setError(err.message || "Gagal memuat author");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, searchQuery]);
+
+  useEffect(() => {
+    fetchAuthors();
+  }, [fetchAuthors]);
+
+  // Reset ke page 1 saat search berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  // ─── Modal Handlers ───────────────────────────────────────────────────────────
   const handleOpenAddModal = () => {
     setEditingAuthor(null);
     setIsModalOpen(true);
@@ -93,32 +87,107 @@ export default function AuthorsPage() {
   };
 
   const handleOpenDeleteModal = (id) => {
-    setDeletingAuthorId(id);
-    setIsDeleteModalOpen(true);
+    const target = authors.find((a) => a.id === id);
+    if (target) {
+      setDeletingAuthor(target);
+      setIsDeleteModalOpen(true);
+    }
   };
 
-  const handleConfirmDelete = () => {
-    if (deletingAuthorId) {
-      setAuthors(authors.filter((a) => a.id !== deletingAuthorId));
+  // ─── Save Author (POST / PUT) ─────────────────────────────────────────────────
+  const handleSaveAuthor = async (authorData) => {
+    try {
+      if (authorData.id) {
+        // PUT /api/authors/[id]
+        const res = await fetch(`/api/authors/${authorData.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: authorData.name,
+            title: authorData.title,
+            bio: authorData.bio,
+            avatarUrl: authorData.avatarUrl,
+            tags: authorData.tags,
+          }),
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) {
+          throw new Error(result.error || "Gagal mengupdate author");
+        }
+        showToast("Author berhasil diupdate!", "success");
+      } else {
+        // POST /api/authors
+        const res = await fetch("/api/authors", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: authorData.name,
+            title: authorData.title,
+            bio: authorData.bio,
+            avatarUrl: authorData.avatarUrl,
+            tags: authorData.tags,
+          }),
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) {
+          throw new Error(result.error || "Gagal membuat author");
+        }
+        showToast("Author baru berhasil ditambahkan!", "success");
+        setCurrentPage(1);
+      }
+
+      await fetchAuthors();
+    } catch (err) {
+      console.error("[Save Author Error]:", err);
+      showToast(err.message || "Gagal menyimpan author", "error");
+    }
+  };
+
+  // ─── Confirm Delete (DELETE /api/authors/[id]) ───────────────────────────────
+  const handleConfirmDelete = async () => {
+    if (!deletingAuthor) return;
+
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/authors/${deletingAuthor.id}`, {
+        method: "DELETE",
+      });
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || "Gagal menghapus author");
+      }
+
+      showToast(`Author "${deletingAuthor.name}" berhasil dihapus`, "success");
       setIsDeleteModalOpen(false);
-      setDeletingAuthorId(null);
+      setDeletingAuthor(null);
+      await fetchAuthors();
+    } catch (err) {
+      console.error("[Delete Author Error]:", err);
+      showToast(err.message || "Gagal menghapus author", "error");
+    } finally {
+      setIsDeleting(false);
     }
   };
-
-  const handleSaveAuthor = (authorData) => {
-    if (editingAuthor) {
-      setAuthors(
-        authors.map((a) => (a.id === authorData.id ? { ...a, ...authorData } : a))
-      );
-    } else {
-      setAuthors([authorData, ...authors]);
-    }
-  };
-
-  const targetAuthor = authors.find((a) => a.id === deletingAuthorId);
 
   return (
     <div className="flex min-h-screen bg-background text-on-surface font-sans overflow-x-hidden w-full">
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`fixed top-6 right-6 z-[120] px-5 py-3 rounded-2xl shadow-xl font-label-md text-label-md flex items-center gap-3 backdrop-blur-md ${
+            toast.type === "error"
+              ? "bg-error/90 text-on-error border border-error/30"
+              : "bg-primary-container/90 text-on-primary-container border border-primary/30"
+          }`}
+        >
+          <span className="material-symbols-outlined text-xl">
+            {toast.type === "error" ? "error" : "check_circle"}
+          </span>
+          <span>{toast.message}</span>
+        </div>
+      )}
+
       {/* SideNavBar */}
       <Sidebar activeMenu="Authors" />
 
@@ -137,9 +206,9 @@ export default function AuthorsPage() {
           {/* Page Title & Add Action */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
             <div>
-              <h2 className="font-display-lg text-display-lg font-extrabold text-on-surface tracking-tight">
+              <h1 className="font-display-lg text-display-lg font-extrabold text-on-surface tracking-tight">
                 Manage Authors
-              </h2>
+              </h1>
               <p className="text-on-surface-variant mt-1">
                 Curate and manage the voices behind the wisdom.
               </p>
@@ -169,22 +238,51 @@ export default function AuthorsPage() {
             </div>
           </div>
 
+          {/* Error Banner */}
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-error/10 border border-error/30 text-error flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined">warning</span>
+                <span className="text-sm font-medium">{error}</span>
+              </div>
+              <button
+                onClick={fetchAuthors}
+                className="px-3 py-1 bg-error/20 hover:bg-error/30 rounded-lg text-xs font-semibold cursor-pointer transition-colors"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          )}
+
           {/* Authors Bento Grid */}
-          <AuthorGrid
-            authors={filteredAuthors}
-            onEdit={handleOpenEditModal}
-            onDelete={handleOpenDeleteModal}
-            onAddNew={handleOpenAddModal}
-          />
+          {isLoading ? (
+            <div className="glass-card rounded-2xl p-12 text-center border border-outline-variant/20 mb-12 flex flex-col items-center justify-center gap-3">
+              <span className="material-symbols-outlined text-4xl animate-spin text-primary">
+                progress_activity
+              </span>
+              <p className="text-on-surface-variant text-sm font-medium">
+                Memuat data author...
+              </p>
+            </div>
+          ) : (
+            <AuthorGrid
+              authors={authors}
+              onEdit={handleOpenEditModal}
+              onDelete={handleOpenDeleteModal}
+              onAddNew={handleOpenAddModal}
+            />
+          )}
 
           {/* Pagination */}
-          <AuthorPagination
-            currentPage={currentPage}
-            totalPages={1}
-            totalItems={124}
-            itemsPerPage={5}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          {!isLoading && (
+            <AuthorPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          )}
         </div>
       </main>
 
@@ -204,17 +302,18 @@ export default function AuthorsPage() {
         isOpen={isDeleteModalOpen}
         onClose={() => {
           setIsDeleteModalOpen(false);
-          setDeletingAuthorId(null);
+          setDeletingAuthor(null);
         }}
         onConfirm={handleConfirmDelete}
         title="Hapus Author?"
         message={
-          targetAuthor
-            ? `Apakah Anda yakin ingin menghapus author "${targetAuthor.name}"? Tindakan ini tidak dapat dibatalkan.`
+          deletingAuthor
+            ? `Apakah Anda yakin ingin menghapus author "${deletingAuthor.name}"? Quote yang terkait akan tetap ada namun tidak lagi terhubung ke author ini.`
             : "Apakah Anda yakin ingin menghapus author ini?"
         }
         confirmLabel="Hapus Permanen"
         cancelLabel="Batal"
+        isLoading={isDeleting}
       />
     </div>
   );

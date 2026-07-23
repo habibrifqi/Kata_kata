@@ -2,18 +2,12 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { neonConfig } from "@neondatabase/serverless";
 
-// Prisma v7: Wajib menggunakan driver adapter
-// Menggunakan Neon adapter karena database kita adalah Neon PostgreSQL
-// See: https://pris.ly/d/driver-adapters
-
-// WebSocket dibutuhkan oleh Neon serverless driver di Node.js runtime
-// (tidak diperlukan di Edge Runtime yang sudah punya WebSocket built-in)
+// Prisma v7+ Adapter Neon Setup
 if (typeof WebSocket === "undefined") {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   neonConfig.webSocketConstructor = require("ws");
 }
 
-// Helper untuk membuat Prisma Client baru dengan Neon adapter
 function createPrismaClient() {
   const connectionString = process.env.DATABASE_URL;
 
@@ -21,7 +15,6 @@ function createPrismaClient() {
     throw new Error("DATABASE_URL environment variable is not set");
   }
 
-  // PrismaNeon menerima PoolConfig (connection string atau object config)
   const adapter = new PrismaNeon({ connectionString });
 
   return new PrismaClient({
@@ -33,13 +26,19 @@ function createPrismaClient() {
   });
 }
 
-// Singleton pattern untuk Next.js (mencegah multiple instances saat hot-reload)
+// Singleton pattern dengan auto-invalidation jika schema Prisma bertambah (e.g. model author)
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+function getPrismaClient(): PrismaClient {
+  // Jika instance di memory belum ada atau belum punya model 'author', buat instance baru
+  if (!globalForPrisma.prisma || !("author" in (globalForPrisma.prisma as unknown as object))) {
+    globalForPrisma.prisma = createPrismaClient();
+  }
+  return globalForPrisma.prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+export const prisma = getPrismaClient();
 
 export default prisma;

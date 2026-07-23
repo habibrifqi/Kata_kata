@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import type { CreateQuoteInput, ApiResponse, QuoteType } from "@/types";
+import type { CreateQuoteInput, ApiResponse, QuoteType, PaginatedResponse } from "@/types";
 
 // GET /api/quotes - Ambil semua quotes dengan filter & pagination
 export async function GET(request: NextRequest) {
@@ -8,23 +8,26 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") ?? "";
     const category = searchParams.get("category") ?? "";
-    const page = parseInt(searchParams.get("page") ?? "1", 10);
-    const pageSize = parseInt(searchParams.get("pageSize") ?? "12", 10);
+    const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
+    const pageSize = Math.max(1, Math.min(50, parseInt(searchParams.get("pageSize") ?? "12", 10)));
     const favorite = searchParams.get("favorite");
 
     const where = {
       AND: [
-        // Filter pencarian teks
+        // Filter pencarian teks atau nama author
         search
           ? {
               OR: [
                 { text: { contains: search, mode: "insensitive" as const } },
-                { author: { contains: search, mode: "insensitive" as const } },
-                { role: { contains: search, mode: "insensitive" as const } },
+                {
+                  author: {
+                    name: { contains: search, mode: "insensitive" as const },
+                  },
+                },
               ],
             }
           : {},
-        // Filter kategori
+        // Filter kategori (global)
         category
           ? {
               categories: {
@@ -41,10 +44,22 @@ export async function GET(request: NextRequest) {
       ],
     };
 
-    const [quotes, total] = await Promise.all([
+    const [total, quotes] = await Promise.all([
+      prisma.quote.count({ where }),
       prisma.quote.findMany({
         where,
         include: {
+          // Join ke Author
+          author: {
+            select: {
+              id: true,
+              name: true,
+              title: true,
+              avatarUrl: true,
+              tags: true,
+            },
+          },
+          // Join ke Category (many-to-many)
           categories: {
             include: { category: true },
           },
@@ -53,23 +68,24 @@ export async function GET(request: NextRequest) {
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
-      prisma.quote.count({ where }),
     ]);
 
-    // Flatten kategori untuk response
+    // Flatten kategori untuk response yang lebih bersih
     const formattedQuotes = quotes.map((q) => ({
       ...q,
       categories: q.categories.map((qc) => qc.category),
     }));
 
-    return NextResponse.json({
+    const response: PaginatedResponse<QuoteType> = {
       success: true,
-      data: formattedQuotes,
+      data: formattedQuotes as unknown as QuoteType[],
       total,
       page,
       pageSize,
       totalPages: Math.ceil(total / pageSize),
-    });
+    };
+
+    return NextResponse.json(response, { status: 200 });
   } catch (error) {
     console.error("[GET /api/quotes] Error:", error);
     return NextResponse.json(
@@ -91,21 +107,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!body.author?.trim()) {
-      return NextResponse.json(
-        { success: false, error: "Author tidak boleh kosong" } satisfies ApiResponse<never>,
-        { status: 400 }
-      );
+    // Jika authorId disertakan, validasi bahwa author ada di DB
+    if (body.authorId) {
+      const authorExists = await prisma.author.findUnique({
+        where: { id: body.authorId },
+        select: { id: true },
+      });
+      if (!authorExists) {
+        return NextResponse.json(
+          { success: false, error: "Author tidak ditemukan" } satisfies ApiResponse<never>,
+          { status: 404 }
+        );
+      }
     }
 
     const quote = await prisma.quote.create({
       data: {
         text: body.text.trim(),
-        author: body.author.trim(),
-        role: body.role ?? null,
         isFavorite: body.isFavorite ?? false,
-        avatarGradient: body.avatarGradient ?? null,
-        avatarInitials: body.avatarInitials ?? null,
+        authorId: body.authorId ?? null,
         // Connect ke categories yang ada (by ID)
         categories: body.categoryIds?.length
           ? {
@@ -116,6 +136,15 @@ export async function POST(request: NextRequest) {
           : undefined,
       },
       include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            title: true,
+            avatarUrl: true,
+            tags: true,
+          },
+        },
         categories: {
           include: { category: true },
         },
@@ -132,6 +161,14 @@ export async function POST(request: NextRequest) {
       data: formattedQuote as unknown as QuoteType,
       message: "Quote berhasil dibuat",
     };
+
+    // Update quotesCount di Author jika ada authorId
+    if (body.authorId) {
+      await prisma.author.update({
+        where: { id: body.authorId },
+        data: { quotesCount: { increment: 1 } },
+      });
+    }
 
     return NextResponse.json(response, { status: 201 });
   } catch (error) {

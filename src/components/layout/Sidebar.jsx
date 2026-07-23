@@ -39,7 +39,12 @@ export default function Sidebar({ activeMenu = "Categories", navItems = DEFAULT_
                   : "text-on-surface-variant hover:bg-surface-variant/50"
               }`}
             >
-              <span className="material-symbols-outlined">{item.icon}</span>
+              <span
+                className="material-symbols-outlined"
+                style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+              >
+                {item.icon}
+              </span>
               <span className="font-body-md text-body-md">{item.name}</span>
             </Link>
           );

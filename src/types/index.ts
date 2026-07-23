@@ -3,6 +3,42 @@
 // File ini dapat diimport di frontend JSX maupun backend TS
 // ============================================================
 
+// ---- User --------------------------------------------------
+
+export interface UserType {
+  id: number;
+  name: string;
+  email: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+// ---- Author ------------------------------------------------
+
+export interface AuthorType {
+  id: number;
+  name: string;
+  title?: string | null;
+  bio?: string | null;
+  avatarUrl?: string | null;
+  tags: string[];
+  quotesCount: number;
+  userId?: number | null;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export type CreateAuthorInput = {
+  name: string;
+  title?: string;
+  bio?: string;
+  avatarUrl?: string;
+  tags?: string[];
+  userId?: number | null;
+};
+
+export type UpdateAuthorInput = Partial<CreateAuthorInput>;
+
 // ---- Category -----------------------------------------------
 
 export interface CategoryType {
@@ -26,17 +62,20 @@ export type UpdateCategoryInput = Partial<CreateCategoryInput>;
 export interface QuoteType {
   id: number;
   text: string;
-  author: string;
-  role?: string | null;
   isFavorite: boolean;
-  avatarGradient?: string | null;
-  avatarInitials?: string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
+  // Relasi ke Author (nullable — join dari tabel authors)
+  authorId?: number | null;
+  author?: AuthorType | null;
+  // Relasi ke Category (many-to-many)
   categories?: CategoryType[];
 }
 
-export type CreateQuoteInput = Omit<QuoteType, "id" | "createdAt" | "updatedAt" | "categories"> & {
+export type CreateQuoteInput = {
+  text: string;
+  isFavorite?: boolean;
+  authorId?: number | null;
   categoryIds?: number[];
 };
 

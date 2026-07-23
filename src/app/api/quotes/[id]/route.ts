@@ -6,6 +6,22 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+// Helper: include Author + Categories dalam query
+const quoteInclude = {
+  author: {
+    select: {
+      id: true,
+      name: true,
+      title: true,
+      avatarUrl: true,
+      tags: true,
+    },
+  },
+  categories: {
+    include: { category: true },
+  },
+} as const;
+
 // GET /api/quotes/[id] - Ambil detail quote
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
@@ -21,11 +37,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 
     const quote = await prisma.quote.findUnique({
       where: { id: quoteId },
-      include: {
-        categories: {
-          include: { category: true },
-        },
-      },
+      include: quoteInclude,
     });
 
     if (!quote) {
@@ -40,10 +52,10 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
       categories: quote.categories.map((qc) => qc.category),
     };
 
-    return NextResponse.json({
-      success: true,
-      data: formattedQuote,
-    } satisfies ApiResponse<QuoteType>);
+    return NextResponse.json(
+      { success: true, data: formattedQuote as unknown as QuoteType } satisfies ApiResponse<QuoteType>,
+      { status: 200 }
+    );
   } catch (error) {
     console.error("[GET /api/quotes/[id]] Error:", error);
     return NextResponse.json(
@@ -68,19 +80,42 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const body: UpdateQuoteInput = await request.json();
 
+    if (body.text !== undefined && !body.text.trim()) {
+      return NextResponse.json(
+        { success: false, error: "Teks quote tidak boleh kosong" } satisfies ApiResponse<never>,
+        { status: 400 }
+      );
+    }
+
+    // Validasi authorId jika disertakan
+    if (body.authorId) {
+      const authorExists = await prisma.author.findUnique({
+        where: { id: body.authorId },
+        select: { id: true },
+      });
+      if (!authorExists) {
+        return NextResponse.json(
+          { success: false, error: "Author tidak ditemukan" } satisfies ApiResponse<never>,
+          { status: 404 }
+        );
+      }
+    }
+
+    // Ambil authorId lama untuk update quotesCount
+    const existingQuote = await prisma.quote.findUnique({
+      where: { id: quoteId },
+      select: { authorId: true },
+    });
+
     const quote = await prisma.quote.update({
       where: { id: quoteId },
       data: {
         ...(body.text && { text: body.text.trim() }),
-        ...(body.author && { author: body.author.trim() }),
-        ...(body.role !== undefined && { role: body.role }),
         ...(body.isFavorite !== undefined && { isFavorite: body.isFavorite }),
-        ...(body.avatarGradient !== undefined && { avatarGradient: body.avatarGradient }),
-        ...(body.avatarInitials !== undefined && { avatarInitials: body.avatarInitials }),
+        ...(body.authorId !== undefined && { authorId: body.authorId ?? null }),
         // Update relasi kategori jika ada categoryIds
         ...(body.categoryIds !== undefined && {
           categories: {
-            // Hapus relasi lama dan buat yang baru
             deleteMany: {},
             create: body.categoryIds.map((categoryId) => ({
               category: { connect: { id: categoryId } },
@@ -88,23 +123,40 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
           },
         }),
       },
-      include: {
-        categories: {
-          include: { category: true },
-        },
-      },
+      include: quoteInclude,
     });
+
+    // Sync quotesCount jika authorId berubah
+    if (body.authorId !== undefined && body.authorId !== existingQuote?.authorId) {
+      // Kurangi count author lama
+      if (existingQuote?.authorId) {
+        await prisma.author.update({
+          where: { id: existingQuote.authorId },
+          data: { quotesCount: { decrement: 1 } },
+        });
+      }
+      // Tambah count author baru
+      if (body.authorId) {
+        await prisma.author.update({
+          where: { id: body.authorId },
+          data: { quotesCount: { increment: 1 } },
+        });
+      }
+    }
 
     const formattedQuote = {
       ...quote,
       categories: quote.categories.map((qc) => qc.category),
     };
 
-    return NextResponse.json({
-      success: true,
-      data: formattedQuote,
-      message: "Quote berhasil diupdate",
-    } satisfies ApiResponse<QuoteType>);
+    return NextResponse.json(
+      {
+        success: true,
+        data: formattedQuote as unknown as QuoteType,
+        message: "Quote berhasil diupdate",
+      } satisfies ApiResponse<QuoteType>,
+      { status: 200 }
+    );
   } catch (error: unknown) {
     console.error("[PUT /api/quotes/[id]] Error:", error);
 
@@ -140,14 +192,28 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Ambil authorId sebelum hapus untuk update quotesCount
+    const existingQuote = await prisma.quote.findUnique({
+      where: { id: quoteId },
+      select: { authorId: true },
+    });
+
     await prisma.quote.delete({
       where: { id: quoteId },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "Quote berhasil dihapus",
-    } satisfies ApiResponse<never>);
+    // Kurangi quotesCount author jika ada
+    if (existingQuote?.authorId) {
+      await prisma.author.update({
+        where: { id: existingQuote.authorId },
+        data: { quotesCount: { decrement: 1 } },
+      });
+    }
+
+    return NextResponse.json(
+      { success: true, message: "Quote berhasil dihapus" } satisfies ApiResponse<never>,
+      { status: 200 }
+    );
   } catch (error: unknown) {
     console.error("[DELETE /api/quotes/[id]] Error:", error);
 

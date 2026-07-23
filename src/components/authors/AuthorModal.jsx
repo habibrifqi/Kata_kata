@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 
-export default function AuthorModal({ isOpen, onClose, onSave, author = null }) {
+export default function AuthorModal({
+  isOpen,
+  onClose,
+  onSave,
+  author = null,
+}) {
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
   const [bio, setBio] = useState("");
@@ -37,7 +42,7 @@ export default function AuthorModal({ isOpen, onClose, onSave, author = null }) 
       .filter((t) => t.length > 0);
 
     onSave?.({
-      id: author ? author.id : Date.now(),
+      id: author?.id,
       name,
       title,
       bio,
