@@ -63,6 +63,33 @@
   --spacing-margin_desktop: 40px;
   --spacing-stack_lg: 32px;
 
+  /* Typography Font Sizes */
+  --text-display-lg: 40px;
+  --text-display-lg--line-height: 1.2;
+  --text-display-lg--letter-spacing: -0.02em;
+
+  --text-display-lg-mobile: 32px;
+  --text-display-lg-mobile--line-height: 1.2;
+
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 1.4;
+
+  --text-headline-sm: 20px;
+  --text-headline-sm--line-height: 1.4;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.6;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.6;
+
+  --text-label-md: 14px;
+  --text-label-md--line-height: 1;
+  --text-label-md--letter-spacing: 0.01em;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 1;
+
   /* Radius overrides */
   --radius-DEFAULT: 0.25rem;
   --radius-lg: 0.5rem;
@@ -138,4 +165,102 @@ body {
 .sidebar-indicator {
   box-shadow: 0 0 15px rgba(192, 193, 255, 0.3);
 }
+
+.indigo-gradient-bg {
+  background: radial-gradient(circle at top left, #23005c, #13131b 70%);
+}
+
+.floating-bubble {
+  position: absolute;
+  animation: float 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(192, 193, 255, 0.2));
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(-20px) translateX(10px); }
+}
+
+.primary-gradient-btn {
+  background: linear-gradient(135deg, #8083ff 0%, #571bc1 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.primary-gradient-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(128, 131, 255, 0.4);
+}
+
+.primary-gradient-btn:active {
+  transform: scale(0.98);
+}
+
+.input-focus-ring:focus-within {
+  border-color: #c0c1ff;
+  box-shadow: 0 0 12px rgba(192, 193, 255, 0.3);
+}
+
+/* Webkit autofill fix for dark mode */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #e4e1ed !important;
+  -webkit-box-shadow: 0 0 0px 1000px #1b1b23 inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+  background-color: transparent !important;
+}
+
+/* Custom Typography Utility Classes matching HTML Tailwind Config */
+.font-display-lg, .text-display-lg {
+  font-size: 40px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.font-display-lg-mobile, .text-display-lg-mobile {
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.font-headline-md, .text-headline-md {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.font-headline-sm, .text-headline-sm {
+  font-size: 20px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.font-body-lg, .text-body-lg {
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.font-body-md, .text-body-md {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.font-label-md, .text-label-md {
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+.font-label-sm, .text-label-sm {
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+
 
