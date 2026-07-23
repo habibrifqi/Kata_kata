@@ -10,10 +10,22 @@ export default function QuoteCard({
   onDelete
 }) {
   const categoriesList = Array.isArray(quote.categories)
-    ? quote.categories
+    ? quote.categories.map((c) => (typeof c === "object" ? c.name : c))
     : quote.category
-    ? [quote.category]
+    ? [typeof quote.category === "object" ? quote.category.name : quote.category]
     : [];
+
+  const authorName = typeof quote.author === "object" && quote.author !== null
+    ? quote.author.name
+    : quote.author || "Anonim";
+
+  const authorRole = typeof quote.author === "object" && quote.author !== null
+    ? quote.author.title || "Author"
+    : quote.role || "Author";
+
+  const authorAvatarUrl = typeof quote.author === "object" && quote.author !== null
+    ? quote.author.avatarUrl || quote.avatarUrl
+    : quote.avatarUrl;
 
   const getCategoryBadgeStyle = (category) => {
     switch (category?.toLowerCase()) {
@@ -33,11 +45,11 @@ export default function QuoteCard({
   };
 
   const renderAvatar = () => {
-    if (quote.avatarUrl) {
+    if (authorAvatarUrl) {
       return (
         <img
-          src={quote.avatarUrl}
-          alt={quote.author}
+          src={authorAvatarUrl}
+          alt={authorName}
           className="w-10 h-10 rounded-full object-cover border border-outline-variant/30"
         />
       );
@@ -57,7 +69,7 @@ export default function QuoteCard({
 
     return (
       <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant font-bold text-sm">
-        {quote.author?.slice(0, 2).toUpperCase() || "??"}
+        {authorName?.slice(0, 2).toUpperCase() || "??"}
       </div>
     );
   };
@@ -84,8 +96,8 @@ export default function QuoteCard({
           <div className="flex items-center gap-3">
             {renderAvatar()}
             <div>
-              <p className="font-label-md text-sm font-semibold text-on-surface">{quote.author}</p>
-              <p className="font-label-sm text-xs text-on-surface-variant">{quote.role || "Author"}</p>
+              <p className="font-label-md text-sm font-semibold text-on-surface">{authorName}</p>
+              <p className="font-label-sm text-xs text-on-surface-variant">{authorRole}</p>
             </div>
           </div>
         </div>
@@ -170,8 +182,8 @@ export default function QuoteCard({
       <div className="flex items-center gap-3 mt-auto">
         {renderAvatar()}
         <div>
-          <p className="font-label-md text-sm font-semibold text-on-surface">{quote.author}</p>
-          <p className="font-label-sm text-xs text-on-surface-variant">{quote.role || "Author"}</p>
+          <p className="font-label-md text-sm font-semibold text-on-surface">{authorName}</p>
+          <p className="font-label-sm text-xs text-on-surface-variant">{authorRole}</p>
         </div>
       </div>
     </div>
