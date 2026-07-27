@@ -5,13 +5,30 @@
 
 // ---- User --------------------------------------------------
 
+export type UserRole = "writer" | "admin" | "superadmin";
+
 export interface UserType {
   id: number;
   name: string;
   email: string;
+  image?: string | null;
+  role: UserRole;
   createdAt: Date | string;
   updatedAt: Date | string;
+  _count?: {
+    authors: number;
+  };
 }
+
+export type CreateUserInput = {
+  name: string;
+  email: string;
+  image?: string | null;
+  role?: UserRole;
+};
+
+export type UpdateUserInput = Partial<CreateUserInput>;
+
 
 // ---- Author ------------------------------------------------
 
