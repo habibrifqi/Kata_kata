@@ -11,14 +11,26 @@ datasource db {
 }
 
 // ============================================================
+// Enum: Role
+// Tiga tingkatan akses user dalam sistem
+// ============================================================
+enum Role {
+  writer
+  admin
+  superadmin
+}
+
+// ============================================================
 // Model: User
-// Pemilik author (nullable untuk saat ini, belum ada auth)
+// Pemilik author, diautentikasi via Google OAuth
 // 1 User bisa punya banyak Author
 // ============================================================
 model User {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
+  image     String?  // Avatar URL dari Google
+  role      Role     @default(writer)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   authors   Author[]

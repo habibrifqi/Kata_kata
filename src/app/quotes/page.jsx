@@ -11,10 +11,12 @@ import EmptyState from "@/components/quotes/EmptyState";
 import Pagination from "@/components/quotes/Pagination";
 import QuoteModal from "@/components/quotes/QuoteModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 const ITEMS_PER_PAGE = 12;
 
 export default function QuotesPage() {
+  const { user } = useCurrentUser();
   const [quotes, setQuotes] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -252,7 +254,7 @@ export default function QuotesPage() {
       )}
 
       {/* Desktop Sidebar */}
-      <Sidebar activeMenu="Quotes" />
+      <Sidebar activeMenu="Quotes" user={user} />
 
       {/* Main Content Wrapper */}
       <main className="lg:ml-[260px] min-h-screen relative pb-24">

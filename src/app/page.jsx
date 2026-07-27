@@ -9,8 +9,10 @@ import StatsGrid from "@/components/dashboard/StatsGrid";
 import RecentQuotes from "@/components/dashboard/RecentQuotes";
 import PopularCategories from "@/components/dashboard/PopularCategories";
 import AddQuoteFab from "@/components/dashboard/AddQuoteFab";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 export default function Home() {
+  const { user } = useCurrentUser();
   const [activeMenu, setActiveMenu] = useState("Dashboard");
   const [quotes, setQuotes] = useState([
     {
@@ -101,7 +103,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0a0e1a] text-[#e4e1ed] font-sans overflow-x-hidden selection:bg-primary/30">
       {/* Desktop Sidebar Navigation */}
-      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} user={user} />
 
       {/* Top Header Navigation */}
       <Header />

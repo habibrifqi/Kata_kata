@@ -8,10 +8,12 @@ import AuthorGrid from "@/components/authors/AuthorGrid";
 import AuthorPagination from "@/components/authors/AuthorPagination";
 import AuthorModal from "@/components/authors/AuthorModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { useCurrentUser } from "@/lib/useCurrentUser";
 
 const ITEMS_PER_PAGE = 10;
 
 export default function AuthorsPage() {
+  const { user } = useCurrentUser();
   const [authors, setAuthors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -189,7 +191,7 @@ export default function AuthorsPage() {
       )}
 
       {/* SideNavBar */}
-      <Sidebar activeMenu="Authors" />
+      <Sidebar activeMenu="Authors" user={user} />
 
       {/* Main Content Canvas */}
       <main className="flex-1 lg:ml-[260px] pb-24 lg:pb-12 relative z-10 min-h-screen w-full max-w-full overflow-x-hidden">
