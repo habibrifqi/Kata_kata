@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 // ─── Error handler dari OAuth callback ───────────────────────────────────────
 function ErrorNotifier({ showNotification }) {
@@ -82,7 +83,7 @@ export default function LoginPage() {
           {/* Animated Background Floating Bubbles */}
           <div className="absolute inset-0 z-0">
             <div
-              className="floating-bubble glass-surface rounded-2xl p-6 top-1/4 left-10 max-w-[280px] transition-transform duration-200 ease-out"
+              className="floating-bubble glass-surface rounded-2xl p-6 top-1/4 left-1/3 max-w-[280px] transition-transform duration-200 ease-out"
               style={{
                 animationDelay: "0s",
                 transform: `translate(${bubbleOffset.x * 0.2}px, ${bubbleOffset.y * 0.2}px)`,
@@ -92,7 +93,8 @@ export default function LoginPage() {
                 format_quote
               </span>
               <p className="text-label-md font-label-md text-on-surface-variant italic">
-                &ldquo;Kreativitas adalah kecerdasan yang sedang bersenang-senang.&rdquo;
+                &ldquo;Kreativitas adalah kecerdasan yang sedang
+                bersenang-senang.&rdquo;
               </p>
             </div>
 
@@ -107,8 +109,8 @@ export default function LoginPage() {
                 format_quote
               </span>
               <p className="text-label-md font-label-md text-on-surface-variant italic">
-                &ldquo;Fokuslah pada tempat yang ingin kamu tuju, bukan pada apa yang
-                kamu takuti.&rdquo;
+                &ldquo;Fokuslah pada tempat yang ingin kamu tuju, bukan pada apa
+                yang kamu takuti.&rdquo;
               </p>
             </div>
 
@@ -123,25 +125,23 @@ export default function LoginPage() {
                 format_quote
               </span>
               <p className="text-label-md font-label-md text-on-surface-variant italic">
-                &ldquo;Mulailah dari mana kamu berada. Gunakan apa yang kamu miliki.&rdquo;
+                &ldquo;Mulailah dari mana kamu berada. Gunakan apa yang kamu
+                miliki.&rdquo;
               </p>
             </div>
           </div>
 
           {/* Foreground Content */}
           <div className="relative z-10 space-y-6">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                <span
-                  className="material-symbols-outlined text-on-primary text-3xl"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
-                >
-                  auto_awesome
-                </span>
-              </div>
-              <span className="font-display-lg text-display-lg text-4xl font-extrabold text-primary tracking-tight">
-                KataKata
-              </span>
+            <div className="flex items-center mb-8">
+              <Image
+                src="/logo/logo_6.png"
+                alt="KataKata Logo"
+                width={400}
+                height={100}
+                className="h-auto max-h-24 w-auto object-contain brightness-130 contrast-105 filter drop-shadow-[0_0_12px_rgba(192,193,255,0.25)] transition-all hover:brightness-150"
+                priority
+              />
             </div>
             <h1 className="font-display-lg text-display-lg text-4xl lg:text-[40px] font-extrabold leading-tight text-white max-w-lg">
               Simpan kata-kata yang{" "}
@@ -149,7 +149,7 @@ export default function LoginPage() {
             </h1>
             <p className="text-body-lg font-body-lg text-lg text-on-surface-variant/80 max-w-md">
               Wadah kurasi bagi para pemikir, penulis, dan kurator untuk
-              mengelola aset intelektual dalam harmoni visual.
+              mengelola aset intelektual dalam harmoni Kata.
             </p>
           </div>
 
@@ -166,14 +166,14 @@ export default function LoginPage() {
           <div className="w-full max-w-md space-y-stack_lg py-8">
             {/* Mobile Logo */}
             <div className="lg:hidden flex justify-center mb-8">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-3xl">
-                  auto_awesome
-                </span>
-                <span className="font-headline-md text-headline-md text-2xl font-bold text-primary">
-                  KataKata
-                </span>
-              </div>
+              <Image
+                src="/logo/logo_6.png"
+                alt="KataKata Logo"
+                width={250}
+                height={80}
+                className="h-auto max-h-10 w-auto object-contain brightness-130 contrast-105 filter drop-shadow-[0_0_12px_rgba(192,193,255,0.25)]"
+                priority
+              />
             </div>
 
             {/* Header */}
@@ -251,7 +251,8 @@ export default function LoginPage() {
                 </span>
               </div>
               <p className="text-xs text-on-surface-variant/60 font-body-sm">
-                Fitur ini sedang dalam pengembangan. Gunakan Google untuk saat ini.
+                Fitur ini sedang dalam pengembangan. Gunakan Google untuk saat
+                ini.
               </p>
             </div>
 
