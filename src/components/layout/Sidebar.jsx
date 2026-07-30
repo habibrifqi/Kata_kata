@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -15,9 +16,18 @@ export const DEFAULT_NAV_ITEMS = [
 
 // ─── Role badge config ────────────────────────────────────────────────────────
 const ROLE_CONFIG = {
-  superadmin: { label: "Super Admin", color: "text-tertiary bg-tertiary/10 border-tertiary/20" },
-  admin: { label: "Admin", color: "text-primary bg-primary/10 border-primary/20" },
-  writer: { label: "Writer", color: "text-secondary bg-secondary/10 border-secondary/20" },
+  superadmin: {
+    label: "Super Admin",
+    color: "text-tertiary bg-tertiary/10 border-tertiary/20",
+  },
+  admin: {
+    label: "Admin",
+    color: "text-primary bg-primary/10 border-primary/20",
+  },
+  writer: {
+    label: "Writer",
+    color: "text-secondary bg-secondary/10 border-secondary/20",
+  },
 };
 
 export default function Sidebar({
@@ -45,14 +55,19 @@ export default function Sidebar({
     <aside className="fixed left-0 top-0 h-screen w-[260px] bg-surface/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-xl shadow-primary/5 hidden lg:flex flex-col p-6 z-50">
       {/* Header */}
       <div className="flex flex-col gap-1 mb-10">
-        <Link href="/">
-          <h1 className="font-display-lg text-display-lg font-extrabold text-primary tracking-tight">
-            KataKata
-          </h1>
+        <Link href="/" className="inline-block">
+          <Image
+            src="/logo/logo_6.png"
+            alt="KataKata Logo"
+            width={180}
+            height={50}
+            className="h-auto max-h-12 w-auto object-contain brightness-130 contrast-105 filter drop-shadow-[0_0_12px_rgba(192,193,255,0.25)] transition-all hover:brightness-150"
+            priority
+          />
         </Link>
-        <span className="font-label-md text-label-md text-on-surface-variant opacity-70">
+        {/* <span className="font-label-md text-label-md text-on-surface-variant opacity-70">
           Curation Hub
-        </span>
+        </span> */}
       </div>
 
       {/* Navigation Links */}
@@ -71,7 +86,9 @@ export default function Sidebar({
             >
               <span
                 className="material-symbols-outlined"
-                style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+                style={
+                  isActive ? { fontVariationSettings: "'FILL' 1" } : undefined
+                }
               >
                 {item.icon}
               </span>
@@ -102,7 +119,9 @@ export default function Sidebar({
               />
             ) : (
               <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-primary text-base">person</span>
+                <span className="material-symbols-outlined text-primary text-base">
+                  person
+                </span>
               </div>
             )}
             <div className="min-w-0 flex-1">
@@ -136,7 +155,9 @@ export default function Sidebar({
           className="flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:bg-error-container/20 transition-all w-full disabled:opacity-60 cursor-pointer"
         >
           {isLoggingOut ? (
-            <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>
+            <span className="material-symbols-outlined animate-spin text-base">
+              progress_activity
+            </span>
           ) : (
             <span className="material-symbols-outlined">logout</span>
           )}
