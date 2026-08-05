@@ -167,7 +167,7 @@ body {
 }
 
 .indigo-gradient-bg {
-  background: radial-gradient(circle at top left, #23005c, #13131b 70%);
+  background: radial-gradient(ellipse at 20% 35%, #2a0066 0%, #161528 55%, #0a0e1a 100%);
 }
 
 .floating-bubble {

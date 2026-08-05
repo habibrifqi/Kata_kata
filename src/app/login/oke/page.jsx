@@ -77,9 +77,9 @@ export default function LoginPage() {
         </div>
       )}
 
-      <main className="flex h-screen w-full">
+      <main className="flex h-screen w-full indigo-gradient-bg relative overflow-hidden">
         {/* Left Panel: Decorative Content */}
-        <section className="hidden lg:flex relative w-1/2 indigo-gradient-bg overflow-hidden flex-col justify-center px-16">
+        <section className="hidden lg:flex relative w-1/2 overflow-hidden flex-col justify-center px-16">
           {/* Animated Background Floating Bubbles */}
           <div className="absolute inset-0 z-0">
             <div
@@ -162,7 +162,7 @@ export default function LoginPage() {
         </section>
 
         {/* Right Panel: Authentication Form */}
-        <section className="w-full lg:w-1/2 bg-background flex items-center justify-center p-gutter relative overflow-y-auto">
+        <section className="w-full lg:w-1/2 flex items-center justify-center p-gutter relative overflow-y-auto">
           <div className="w-full max-w-md space-y-stack_lg py-8">
             {/* Mobile Logo */}
             <div className="lg:hidden flex justify-center mb-8">
@@ -271,7 +271,7 @@ export default function LoginPage() {
           </div>
 
           {/* Background subtle glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] blur-[120px] rounded-full pointer-events-none"></div>
         </section>
       </main>
     </div>
