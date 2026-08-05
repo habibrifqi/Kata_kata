@@ -47,10 +47,14 @@ export default function QuotesPage() {
   };
 
   // ─── Fetch Authors & Categories (for Modal Options) ───────────────────────
-  const fetchMetadata = useCallback(async () => {
+  const fetchMetadata = useCallback(async (userId) => {
     try {
+      // Hanya ambil author milik user yang sedang login
+      const authorParams = new URLSearchParams({ pageSize: "100" });
+      if (userId) authorParams.set("userId", String(userId));
+
       const [resAuthors, resCategories] = await Promise.all([
-        fetch("/api/authors?pageSize=100"),
+        fetch(`/api/authors?${authorParams.toString()}`),
         fetch("/api/categories"),
       ]);
 
@@ -68,8 +72,11 @@ export default function QuotesPage() {
   }, []);
 
   useEffect(() => {
-    fetchMetadata();
-  }, [fetchMetadata]);
+    // Tunggu sampai user sudah dimuat sebelum fetch author
+    if (user !== undefined) {
+      fetchMetadata(user?.userId ?? null);
+    }
+  }, [fetchMetadata, user]);
 
   // ─── Fetch Quotes ────────────────────────────────────────────────────────────
   const fetchQuotes = useCallback(async () => {

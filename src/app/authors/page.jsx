@@ -41,6 +41,9 @@ export default function AuthorsPage() {
 
   // ─── Fetch Authors from API ───────────────────────────────────────────────────
   const fetchAuthors = useCallback(async () => {
+    // Tunggu sampai data user sudah tersedia
+    if (user === undefined) return;
+
     setIsLoading(true);
     setError(null);
     try {
@@ -49,6 +52,13 @@ export default function AuthorsPage() {
         pageSize: String(ITEMS_PER_PAGE),
         ...(searchQuery.trim() ? { search: searchQuery.trim() } : {}),
       });
+
+      // Role-based filter:
+      // - writer → hanya lihat author miliknya sendiri (filter userId)
+      // - admin / superadmin → lihat semua author
+      if (user?.role === "writer" && user?.userId) {
+        params.set("userId", String(user.userId));
+      }
 
       const res = await fetch(`/api/authors?${params.toString()}`);
       const result = await res.json();
@@ -66,7 +76,7 @@ export default function AuthorsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, searchQuery]);
+  }, [currentPage, searchQuery, user]);
 
   useEffect(() => {
     fetchAuthors();
@@ -128,6 +138,7 @@ export default function AuthorsPage() {
             bio: authorData.bio,
             avatarUrl: authorData.avatarUrl,
             tags: authorData.tags,
+            userId: user?.userId ?? null, // Otomatis isi userId dari user yang sedang login
           }),
         });
         const result = await res.json();

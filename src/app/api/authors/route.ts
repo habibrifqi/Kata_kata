@@ -15,21 +15,31 @@ export async function GET(request: NextRequest) {
     const pageSize = Math.max(1, Math.min(50, parseInt(searchParams.get("pageSize") ?? "10", 10)));
     const skip = (page - 1) * pageSize;
 
-    const whereClause = search
-      ? {
-          OR: [
-            { name: { contains: search, mode: "insensitive" as const } },
-            { title: { contains: search, mode: "insensitive" as const } },
-            { bio: { contains: search, mode: "insensitive" as const } },
-          ],
-        }
-      : undefined;
+    // Filter berdasarkan userId (opsional) — untuk dropdown di modal Quote
+    const userIdParam = searchParams.get("userId");
+    const userId = userIdParam ? parseInt(userIdParam, 10) : null;
+
+    const whereClause = {
+      ...(search
+        ? {
+            OR: [
+              { name: { contains: search, mode: "insensitive" as const } },
+              { title: { contains: search, mode: "insensitive" as const } },
+              { bio: { contains: search, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+      // Jika userId ada, filter author milik user tersebut saja
+      ...(userId ? { userId } : {}),
+    } as Record<string, unknown> | undefined;
+
+    const finalWhere = Object.keys(whereClause as object).length > 0 ? whereClause : undefined;
 
     // Jalankan query total & data secara paralel
     const [total, authors] = await Promise.all([
-      prisma.author.count({ where: whereClause }),
+      prisma.author.count({ where: finalWhere }),
       prisma.author.findMany({
-        where: whereClause,
+        where: finalWhere,
         orderBy: { updatedAt: "desc" },
         skip,
         take: pageSize,
