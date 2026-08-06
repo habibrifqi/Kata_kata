@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import SearchableSelect from "@/components/ui/SearchableSelect";
 
 export default function QuoteModal({
   isOpen,
@@ -49,20 +50,6 @@ export default function QuoteModal({
 
   if (!isOpen) return null;
 
-  // Handle select category dropdown change -> add chip
-  const handleSelectCategory = (e) => {
-    const catId = parseInt(e.target.value, 10);
-    if (!catId) return;
-    if (!selectedCategoryIds.includes(catId)) {
-      setSelectedCategoryIds([...selectedCategoryIds, catId]);
-    }
-    e.target.value = "";
-  };
-
-  // Remove category chip
-  const handleRemoveCategory = (catId) => {
-    setSelectedCategoryIds(selectedCategoryIds.filter((id) => id !== catId));
-  };
 
   // Image Upload / Drag & Drop handler for OCR Scan
   const handleFileChange = (e) => {
@@ -108,7 +95,7 @@ export default function QuoteModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="glass-surface w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border border-primary/20 animate-in zoom-in duration-300">
+      <div className="glass-surface w-full max-w-2xl rounded-2xl shadow-2xl border border-primary/20 animate-in zoom-in duration-300 relative">
         {/* Header */}
         <div className="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-low/50">
           <h2 className="font-headline-sm text-headline-sm text-on-surface">
@@ -212,64 +199,15 @@ export default function QuoteModal({
                       </button>
                     )}
                   </div>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[20px] pointer-events-none">
-                      tag
-                    </span>
-                    <select
-                      onChange={handleSelectCategory}
-                      defaultValue=""
-                      className="w-full bg-surface-container-highest/50 border border-outline-variant/20 rounded-xl py-3 pl-12 pr-10 text-on-surface appearance-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 outline-none transition-all cursor-pointer"
-                    >
-                      <option value="" disabled>
-                        Pilih Kategori...
-                      </option>
-                      {categories.map((c) => (
-                        <option
-                          key={c.id}
-                          value={c.id}
-                          disabled={selectedCategoryIds.includes(c.id)}
-                          className="bg-surface-container-high text-on-surface"
-                        >
-                          {c.name} {selectedCategoryIds.includes(c.id) ? "(Sudah dipilih)" : ""}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant pointer-events-none">
-                      expand_more
-                    </span>
-                  </div>
+                  <SearchableSelect
+                    options={categories.map((c) => ({ id: c.id, name: c.name }))}
+                    selectedIds={selectedCategoryIds}
+                    onChange={setSelectedCategoryIds}
+                    placeholder="Pilih Kategori..."
+                    searchPlaceholder="Cari kategori..."
+                  />
                 </div>
               </div>
-
-              {/* Chips Preview */}
-              {selectedCategoryIds.length > 0 && (
-                <div className="space-y-1.5">
-                  <span className="text-xs text-on-surface-variant font-label-sm">
-                    Kategori Terpilih ({selectedCategoryIds.length}):
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedCategoryIds.map((id) => {
-                      const cat = categories.find((c) => c.id === id);
-                      return (
-                        <span
-                          key={id}
-                          className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[12px] font-semibold flex items-center gap-1 transition-all"
-                        >
-                          {cat ? cat.name : `Kategori #${id}`}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveCategory(id)}
-                            className="hover:text-error transition-colors ml-0.5 cursor-pointer flex items-center"
-                          >
-                            <span className="material-symbols-outlined text-[14px]">close</span>
-                          </button>
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
 
               {/* Favorite Toggle */}
               <div className="flex items-center gap-3 pt-2">
