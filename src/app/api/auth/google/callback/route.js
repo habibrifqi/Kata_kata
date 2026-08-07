@@ -146,7 +146,7 @@ export async function GET(request) {
   }
 
   // ── Hapus state cookie & redirect ke dashboard ────────────────────────────
-  const response = NextResponse.redirect(new URL("/", request.url));
+  const response = NextResponse.redirect(new URL("/dashboard", request.url));
   response.cookies.delete("oauth_state");
 
   return response;

@@ -4,10 +4,10 @@ import Link from "next/link";
 
 export default function MobileNav({ activeMenu = "Categories" }) {
   const items = [
-    { name: "Home", icon: "home", href: "/" },
-    { name: "Quotes", icon: "format_quote", href: "/quotes" },
-    { name: "Categories", icon: "category", href: "/categories" },
-    { name: "Authors", icon: "person", href: "/authors" },
+    { name: "Home", icon: "home", href: "/dashboard" },
+    { name: "Quotes", icon: "format_quote", href: "/dashboard/quotes" },
+    { name: "Categories", icon: "category", href: "/dashboard/categories" },
+    { name: "Authors", icon: "person", href: "/dashboard/authors" },
   ];
 
   return (

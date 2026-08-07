@@ -6,11 +6,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export const DEFAULT_NAV_ITEMS = [
-  { name: "Dashboard", icon: "dashboard", href: "/" },
-  { name: "Quotes", icon: "format_quote", href: "/quotes" },
-  { name: "Categories", icon: "category", href: "/categories" },
-  { name: "Authors", icon: "person", href: "/authors" },
-  { name: "Users", icon: "group", href: "/users" },
+  { name: "Dashboard", icon: "dashboard", href: "/dashboard" },
+  { name: "Quotes", icon: "format_quote", href: "/dashboard/quotes" },
+  { name: "Categories", icon: "category", href: "/dashboard/categories" },
+  { name: "Authors", icon: "person", href: "/dashboard/authors" },
+  { name: "Users", icon: "group", href: "/dashboard/users" },
   // { name: "Scan Quote", icon: "document_scanner", href: "#scan" },
 ];
 
@@ -55,7 +55,7 @@ export default function Sidebar({
     <aside className="fixed left-0 top-0 h-screen w-[260px] bg-surface/80 backdrop-blur-xl border-r border-outline-variant/20 shadow-xl shadow-primary/5 hidden lg:flex flex-col p-6 z-50">
       {/* Header */}
       <div className="flex flex-col gap-1 mb-10">
-        <Link href="/" className="inline-block">
+        <Link href="/dashboard" className="inline-block">
           <Image
             src="/logo/logo_6.png"
             alt="KataKata Logo"

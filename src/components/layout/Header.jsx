@@ -13,7 +13,7 @@ export default function Header({
   return (
     <header className="fixed top-0 right-0 z-40 bg-background/60 backdrop-blur-md flex justify-between items-center h-16 px-4 sm:px-6 lg:px-gutter lg:left-[260px] left-0 border-b border-outline-variant/10 max-w-full">
       <div className="flex items-center gap-4">
-        <Link href="/" className="lg:hidden flex items-center">
+        <Link href="/dashboard" className="lg:hidden flex items-center">
           <Image
             src="/logo/logo_5.png"
             alt="KataKata Logo"

@@ -11,7 +11,7 @@ export default async function CategoriesPage() {
 
   // Double-check: jika tidak login atau role tidak cukup
   if (!session || !ALLOWED_ROLES.includes(session.role)) {
-    redirect("/?error=forbidden");
+    redirect("/dashboard?error=forbidden");
   }
 
   return <CategoriesClient user={session} />;

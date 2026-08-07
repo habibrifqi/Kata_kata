@@ -11,7 +11,7 @@ const PUBLIC_ROUTES = [
 ];
 
 // ─── Route yang hanya bisa diakses role admin & superadmin ──────────────────
-const ADMIN_ONLY_ROUTES = ["/categories"];
+const ADMIN_ONLY_ROUTES = ["/dashboard/categories"];
 
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
@@ -36,7 +36,7 @@ export async function proxy(request) {
 
   // ── Jika sudah login & mengakses halaman login → redirect ke dashboard ─────
   if (pathname === LOGIN_PAGE && session) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // ── Guard khusus: /categories hanya untuk admin & superadmin ───────────────
@@ -48,7 +48,7 @@ export async function proxy(request) {
     const allowedRoles = ["admin", "superadmin"];
     if (!allowedRoles.includes(session.role)) {
       // Redirect ke dashboard dengan pesan forbidden
-      const url = new URL("/?error=forbidden", request.url);
+      const url = new URL("/dashboard?error=forbidden", request.url);
       return NextResponse.redirect(url);
     }
   }
