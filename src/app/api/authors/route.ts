@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Safely map quotesCount dari relasi
-    const authorsWithCount = authors.map((a) => {
+    const authorsWithCount = authors.map((a: typeof authors[number]) => {
       const { _count, ...authorData } = a;
       return {
         ...authorData,
