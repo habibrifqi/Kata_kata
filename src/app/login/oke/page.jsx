@@ -155,7 +155,7 @@ export default function LoginPage() {
 
           {/* Footer Decorative */}
           <div className="absolute bottom-12 left-16 z-10 flex gap-4 text-label-sm font-label-sm text-xs text-on-surface-variant/40">
-            <span>© 2024 KataKata Curation Hub</span>
+            <span>© 2026 QuatesBox</span>
             <span>•</span>
             <span>Privacy Policy</span>
           </div>
