@@ -8,8 +8,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "KataKata - Curation Hub",
-  description: "Premium content curation hub for quotes and intellectual assets",
+  title: "QuotesBox - Your Words, Your Story",
+  description:
+    "QuotesBox bukan sekadar kumpulan kata-kata, tapi tempat seseorang menyimpan pemikiran, perasaan, dan pengalaman dalam bentuk kata",
 };
 
 export default function RootLayout({ children }) {

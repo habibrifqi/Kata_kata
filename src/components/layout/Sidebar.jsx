@@ -11,7 +11,7 @@ export const DEFAULT_NAV_ITEMS = [
   { name: "Categories", icon: "category", href: "/categories" },
   { name: "Authors", icon: "person", href: "/authors" },
   { name: "Users", icon: "group", href: "/users" },
-  { name: "Scan Quote", icon: "document_scanner", href: "#scan" },
+  // { name: "Scan Quote", icon: "document_scanner", href: "#scan" },
 ];
 
 // ─── Role badge config ────────────────────────────────────────────────────────

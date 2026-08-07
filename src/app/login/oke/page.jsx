@@ -266,7 +266,7 @@ export default function LoginPage() {
               <a href="#" className="text-primary hover:underline">
                 Kebijakan Privasi
               </a>{" "}
-              KataKata.
+              QuotesBox.
             </p>
           </div>
 
