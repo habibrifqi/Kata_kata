@@ -71,9 +71,9 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Flatten kategori untuk response yang lebih bersih
-    const formattedQuotes = quotes.map((q) => ({
+    const formattedQuotes = quotes.map((q: typeof quotes[number]) => ({
       ...q,
-      categories: q.categories.map((qc) => qc.category),
+      categories: q.categories.map((qc: typeof q.categories[number]) => qc.category),
     }));
 
     const response: PaginatedResponse<QuoteType> = {
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
 
     const formattedQuote = {
       ...quote,
-      categories: quote.categories.map((qc) => qc.category),
+      categories: quote.categories.map((qc: typeof quote.categories[number]) => qc.category),
     };
 
     const response: ApiResponse<QuoteType> = {

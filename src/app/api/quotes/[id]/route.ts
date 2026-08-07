@@ -49,7 +49,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 
     const formattedQuote = {
       ...quote,
-      categories: quote.categories.map((qc) => qc.category),
+      categories: quote.categories.map((qc: typeof quote.categories[number]) => qc.category),
     };
 
     return NextResponse.json(
@@ -146,7 +146,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const formattedQuote = {
       ...quote,
-      categories: quote.categories.map((qc) => qc.category),
+      categories: quote.categories.map((qc: typeof quote.categories[number]) => qc.category),
     };
 
     return NextResponse.json(
