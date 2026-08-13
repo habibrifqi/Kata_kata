@@ -5,6 +5,9 @@ const LOGIN_PAGE = "/login/oke";
 
 // ─── Route yang bebas diakses tanpa login ────────────────────────────────────
 const PUBLIC_ROUTES = [
+  "/",
+  "/explore",
+  "/login",
   "/login/oke",
   "/api/auth/google",
   "/api/auth/google/callback",
@@ -18,20 +21,18 @@ export async function proxy(request) {
 
   // Izinkan semua route publik (termasuk prefiks /api/auth/)
   const isPublicRoute =
-    PUBLIC_ROUTES.some((r) => pathname === r || pathname.startsWith(r)) ||
+    pathname === "/" ||
+    pathname === "/explore" ||
+    PUBLIC_ROUTES.some((r) => pathname === r || (r !== "/" && pathname.startsWith(r))) ||
     pathname.startsWith("/api/auth/");
 
   // Baca & decrypt session dari cookie
   const sessionToken = request.cookies.get("kk_session")?.value;
   const session = sessionToken ? await decrypt(sessionToken) : null;
 
-  // ── Redirect ke login jika belum authenticated & bukan public route ────────
+  // ── Jika belum authenticated & mengakses route privat → Tampilkan 404 (Not Found) ─────
   if (!isPublicRoute && !session) {
-    // const url = new URL(LOGIN_PAGE, request.url);
-    // return NextResponse.redirect(url);
-
-    // jika tidak ada halaman yg cocok dan tidak login maka biarkan
-    return NextResponse.next();
+    return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
   }
 
   // ── Jika sudah login & mengakses halaman login → redirect ke dashboard ─────

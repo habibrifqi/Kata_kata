@@ -102,7 +102,7 @@ body {
   background-color: #0a0e1a;
   color: #e4e1ed;
   overflow-x: hidden;
-  font-family: var(--font-plus-jakarta-sans), sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .glass-surface {
@@ -145,17 +145,27 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.font-serif {
+  font-family: var(--font-playfair-display), "Playfair Display", Georgia, serif;
+}
+
 .glass-card {
-  background: rgba(31, 31, 39, 0.4);
+  background: rgba(30, 38, 64, 0.4);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(144, 143, 160, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(192, 193, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
 .glass-card:hover {
   border-color: rgba(192, 193, 255, 0.3);
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+  transform: translateY(-2px);
+}
+
+.search-focus:focus-within {
+  border-color: #c0c1ff;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
 }
 
 .indigo-gradient {
