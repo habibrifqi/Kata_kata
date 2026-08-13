@@ -61,7 +61,9 @@ export default function UsersPage() {
       const result = await res.json();
 
       if (!res.ok || !result.success) {
-        throw new Error(result.error || "Gagal mengambil data user dari server");
+        throw new Error(
+          result.error || "Gagal mengambil data user dari server",
+        );
       }
 
       setUsers(result.data || []);
@@ -104,8 +106,10 @@ export default function UsersPage() {
       }
 
       showToast(
-        isEdit ? "User berhasil diperbarui." : "User baru berhasil ditambahkan.",
-        "success"
+        isEdit
+          ? "User berhasil diperbarui."
+          : "User baru berhasil ditambahkan.",
+        "success",
       );
       setIsModalOpen(false);
       setEditingUser(null);
@@ -177,7 +181,8 @@ export default function UsersPage() {
     });
   };
 
-  const startRecord = totalItems === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const startRecord =
+    totalItems === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
   const endRecord = Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
 
   return (
@@ -200,14 +205,14 @@ export default function UsersPage() {
       <MobileNav activeMenu="Profile" />
 
       {/* Main Content */}
-      <main className="lg:ml-[260px] pt-24 pb-24 lg:pb-10 px-gutter min-h-screen">
+      <main className="lg:ml-[260px] mt-20 pb-24 lg:pb-10 px-gutter min-h-screen">
         <div className="max-w-[1440px] mx-auto">
           {/* Page Header */}
           <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <div>
-              <h2 className="font-display-lg text-3xl md:text-4xl font-extrabold text-on-background tracking-tight">
+              <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface font-extrabold break-words">
                 User Management
-              </h2>
+              </h1>
               <p className="text-on-surface-variant mt-1 text-sm md:text-base">
                 Monitor and manage system users and their permissions.
               </p>
@@ -217,7 +222,7 @@ export default function UsersPage() {
                 setEditingUser(null);
                 setIsModalOpen(true);
               }}
-              className="bg-primary text-on-primary font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary-container transition-all active:scale-[0.98] cursor-pointer"
+              className="bg-primary-container text-on-primary-container px-5 py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-container/20 w-full sm:w-auto self-start sm:self-auto cursor-pointer"
             >
               <span className="material-symbols-outlined">person_add</span>
               Add New User
@@ -237,7 +242,9 @@ export default function UsersPage() {
                 </h3>
               </div>
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary border border-primary/20">
-                <span className="material-symbols-outlined text-2xl">group</span>
+                <span className="material-symbols-outlined text-2xl">
+                  group
+                </span>
               </div>
             </div>
 
@@ -252,7 +259,9 @@ export default function UsersPage() {
                 </h3>
               </div>
               <div className="w-12 h-12 bg-tertiary/10 rounded-xl flex items-center justify-center text-tertiary border border-tertiary/20">
-                <span className="material-symbols-outlined text-2xl">admin_panel_settings</span>
+                <span className="material-symbols-outlined text-2xl">
+                  admin_panel_settings
+                </span>
               </div>
             </div>
 
@@ -267,7 +276,9 @@ export default function UsersPage() {
                 </h3>
               </div>
               <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary border border-secondary/20">
-                <span className="material-symbols-outlined text-2xl">trending_up</span>
+                <span className="material-symbols-outlined text-2xl">
+                  trending_up
+                </span>
               </div>
             </div>
           </div>
@@ -345,24 +356,34 @@ export default function UsersPage() {
                     <th className="px-6 py-4 font-semibold">Email</th>
                     <th className="px-6 py-4 font-semibold">Role</th>
                     <th className="px-6 py-4 font-semibold">Created Date</th>
-                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                    <th className="px-6 py-4 font-semibold text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/10">
                   {isLoading ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-12 text-center text-on-surface-variant">
+                      <td
+                        colSpan={5}
+                        className="px-6 py-12 text-center text-on-surface-variant"
+                      >
                         <div className="flex flex-col items-center justify-center gap-2">
                           <span className="material-symbols-outlined animate-spin text-3xl text-primary">
                             progress_activity
                           </span>
-                          <span className="text-sm">Memuat data pengguna...</span>
+                          <span className="text-sm">
+                            Memuat data pengguna...
+                          </span>
                         </div>
                       </td>
                     </tr>
                   ) : users.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-12 text-center text-on-surface-variant">
+                      <td
+                        colSpan={5}
+                        className="px-6 py-12 text-center text-on-surface-variant"
+                      >
                         <div className="flex flex-col items-center justify-center gap-2">
                           <span className="material-symbols-outlined text-4xl opacity-50">
                             group_off
@@ -459,28 +480,48 @@ export default function UsersPage() {
             {/* Pagination Controls */}
             <div className="p-6 border-t border-outline-variant/10 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-on-surface-variant text-xs font-medium">
-                Showing <span className="text-on-background font-bold">{startRecord}-{endRecord}</span> of{" "}
-                <span className="text-on-background font-bold">{totalItems}</span> users
+                Showing{" "}
+                <span className="text-on-background font-bold">
+                  {startRecord}-{endRecord}
+                </span>{" "}
+                of{" "}
+                <span className="text-on-background font-bold">
+                  {totalItems}
+                </span>{" "}
+                users
               </div>
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
                   disabled={currentPage === 1 || isLoading}
                   className="p-2 rounded-lg border border-outline-variant/20 text-on-surface-variant hover:text-primary hover:border-primary/50 disabled:opacity-30 transition-all cursor-pointer disabled:cursor-not-allowed"
                 >
-                  <span className="material-symbols-outlined text-sm">chevron_left</span>
+                  <span className="material-symbols-outlined text-sm">
+                    chevron_left
+                  </span>
                 </button>
 
                 <div className="flex items-center gap-1">
                   {Array.from({ length: totalPages }, (_, i) => i + 1)
-                    .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                    .filter(
+                      (p) =>
+                        p === 1 ||
+                        p === totalPages ||
+                        Math.abs(p - currentPage) <= 1,
+                    )
                     .map((p, idx, arr) => {
                       const prev = arr[idx - 1];
                       const showEllipsis = prev && p - prev > 1;
                       return (
                         <div key={p} className="flex items-center">
-                          {showEllipsis && <span className="text-on-surface-variant px-1 text-xs">...</span>}
+                          {showEllipsis && (
+                            <span className="text-on-surface-variant px-1 text-xs">
+                              ...
+                            </span>
+                          )}
                           <button
                             onClick={() => setCurrentPage(p)}
                             className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
@@ -497,11 +538,15 @@ export default function UsersPage() {
                 </div>
 
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                  }
                   disabled={currentPage === totalPages || isLoading}
                   className="p-2 rounded-lg border border-outline-variant/20 text-on-surface-variant hover:text-primary hover:border-primary/50 disabled:opacity-30 transition-all cursor-pointer disabled:cursor-not-allowed"
                 >
-                  <span className="material-symbols-outlined text-sm">chevron_right</span>
+                  <span className="material-symbols-outlined text-sm">
+                    chevron_right
+                  </span>
                 </button>
               </div>
             </div>
@@ -521,7 +566,9 @@ export default function UsersPage() {
           >
             <div
               className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
-                toast.type === "error" ? "bg-error/20 text-error" : "bg-primary/20 text-primary"
+                toast.type === "error"
+                  ? "bg-error/20 text-error"
+                  : "bg-primary/20 text-primary"
               }`}
             >
               <span className="material-symbols-outlined text-lg">
@@ -529,7 +576,9 @@ export default function UsersPage() {
               </span>
             </div>
             <div className="text-sm">
-              <p className="font-bold">{toast.type === "error" ? "Error" : "Success"}</p>
+              <p className="font-bold">
+                {toast.type === "error" ? "Error" : "Success"}
+              </p>
               <p className="text-on-surface-variant text-xs">{toast.message}</p>
             </div>
             <button
