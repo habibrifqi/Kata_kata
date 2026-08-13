@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ExploreHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -11,11 +12,15 @@ export default function ExploreHeader() {
       <div className="flex justify-between items-center w-full px-6 py-4 max-w-[1440px] mx-auto">
         {/* Brand & Navigation */}
         <div className="flex items-center gap-8">
-          <Link
-            href="/"
-            className="font-headline-md text-headline-md font-extrabold text-primary tracking-tight hover:opacity-90 transition-opacity"
-          >
-            KataKata
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo/logo_5.png"
+              alt="KataKata Logo"
+              width={140}
+              height={40}
+              className="h-auto max-h-9 w-auto object-contain brightness-130 contrast-105 filter drop-shadow-[0_0_12px_rgba(192,193,255,0.25)] transition-all hover:brightness-150"
+              priority
+            />
           </Link>
           <nav className="hidden md:flex gap-6 items-center">
             <Link
@@ -29,17 +34,17 @@ export default function ExploreHeader() {
 
         {/* Actions */}
         <div className="hidden md:flex items-center gap-4">
-          <Link
+          {/* <Link
             href="/login/oke"
             className="px-4 py-2 text-on-surface-variant font-label-md hover:text-primary transition-colors duration-200"
           >
-            Login
-          </Link>
+            Contribute
+          </Link> */}
           <Link
             href="/login/oke"
-            className="bg-gradient-to-r from-primary-container to-secondary-container text-white px-5 py-2 rounded-lg font-label-md hover:opacity-90 transition-opacity shadow-lg shadow-primary-container/20"
+            className="bg-primary from-primary-container to-secondary-container text-on-primary px-5 py-2 rounded-lg font-label-md hover:opacity-90 transition-opacity shadow-lg shadow-primary-container/20"
           >
-            Sign Up
+            Contribute
           </Link>
         </div>
 
@@ -71,14 +76,7 @@ export default function ExploreHeader() {
               onClick={() => setMobileMenuOpen(false)}
               className="w-full text-center px-4 py-2.5 rounded-lg border border-outline-variant/30 text-on-surface-variant font-label-md hover:text-primary"
             >
-              Login
-            </Link>
-            <Link
-              href="/login/oke"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center bg-gradient-to-r from-primary-container to-secondary-container text-white px-5 py-2.5 rounded-lg font-label-md shadow-lg shadow-primary-container/20"
-            >
-              Sign Up
+              Contribute
             </Link>
           </div>
         </div>
