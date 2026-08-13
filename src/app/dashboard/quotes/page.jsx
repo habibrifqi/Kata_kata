@@ -87,7 +87,9 @@ export default function QuotesPage() {
         page: String(currentPage),
         pageSize: String(ITEMS_PER_PAGE),
         ...(searchQuery.trim() ? { search: searchQuery.trim() } : {}),
-        ...(activeCategory && activeCategory !== "Semua" ? { category: activeCategory } : {}),
+        ...(activeCategory && activeCategory !== "Semua"
+          ? { category: activeCategory }
+          : {}),
       });
 
       const res = await fetch(`/api/quotes?${params.toString()}`);
@@ -145,7 +147,7 @@ export default function QuotesPage() {
       const newStatus = !target.isFavorite;
       // Optimistic Update
       setQuotes((prev) =>
-        prev.map((q) => (q.id === id ? { ...q, isFavorite: newStatus } : q))
+        prev.map((q) => (q.id === id ? { ...q, isFavorite: newStatus } : q)),
       );
 
       const res = await fetch(`/api/quotes/${id}`, {
@@ -158,7 +160,7 @@ export default function QuotesPage() {
       if (!res.ok || !result.success) {
         // Rollback on fail
         setQuotes((prev) =>
-          prev.map((q) => (q.id === id ? { ...q, isFavorite: !newStatus } : q))
+          prev.map((q) => (q.id === id ? { ...q, isFavorite: !newStatus } : q)),
         );
         throw new Error(result.error || "Gagal memperbarui status favorit");
       }
@@ -273,13 +275,13 @@ export default function QuotesPage() {
         />
 
         {/* Main Canvas */}
-        <div className="px-6 lg:px-10 pt-24 pb-8">
+        <div className="mt-20 px-4 sm:px-6 md:px-gutter max-w-container_max_width mx-auto w-full">
           {/* Page Title & View Switcher */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
             <div>
-              <h2 className="font-display-lg text-3xl md:text-4xl font-extrabold text-on-surface tracking-tight">
+              <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface font-extrabold break-words">
                 Quotes Collection
-              </h2>
+              </h1>
               <p className="text-on-surface-variant font-body-md text-base mt-1">
                 Manage and discover your curated inspirations.
               </p>
@@ -288,7 +290,7 @@ export default function QuotesPage() {
             <div className="flex items-center gap-3">
               <button
                 onClick={handleOpenAddModal}
-                className="indigo-gradient text-white font-label-md px-6 py-3 rounded-xl indigo-glow active-scale transition-all shadow-lg shadow-primary/20 flex items-center gap-2 cursor-pointer"
+                className="bg-primary-container text-on-primary-container px-5 py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-container/20 w-full sm:w-auto self-start sm:self-auto cursor-pointer"
               >
                 <Plus className="w-5 h-5" />
                 <span>Tambah Quote</span>
