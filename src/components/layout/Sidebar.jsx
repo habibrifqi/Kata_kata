@@ -9,6 +9,7 @@ export const DEFAULT_NAV_ITEMS = [
   { name: "Dashboard", icon: "dashboard", href: "/dashboard" },
   { name: "Quotes", icon: "format_quote", href: "/dashboard/quotes" },
   { name: "Categories", icon: "category", href: "/dashboard/categories" },
+  { name: "Favorites", icon: "favorite", href: "/dashboard/favorites" },
   { name: "Authors", icon: "person", href: "/dashboard/authors" },
   { name: "Users", icon: "group", href: "/dashboard/users" },
   // { name: "Scan Quote", icon: "document_scanner", href: "#scan" },
