@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { CreateQuoteInput, ApiResponse, QuoteType, PaginatedResponse } from "@/types";
+import { getSession } from "@/lib/session";
 
 // GET /api/quotes - Ambil semua quotes dengan filter & pagination
 export async function GET(request: NextRequest) {
@@ -11,6 +12,8 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
     const pageSize = Math.max(1, Math.min(50, parseInt(searchParams.get("pageSize") ?? "12", 10)));
     const favorite = searchParams.get("favorite");
+    const session = await getSession();
+    const userId = Number(session?.userId);
 
     const where = {
       AND: [
@@ -40,7 +43,13 @@ export async function GET(request: NextRequest) {
             }
           : {},
         // Filter favorit
-        favorite !== null ? { isFavorite: favorite === "true" } : {},
+        favorite !== null && Number.isInteger(userId)
+          ? favorite === "true"
+            ? { favorites: { some: { userId } } }
+            : { favorites: { none: { userId } } }
+          : favorite === "true"
+            ? { id: -1 }
+            : {},
       ],
     };
 
@@ -63,6 +72,9 @@ export async function GET(request: NextRequest) {
           categories: {
             include: { category: true },
           },
+          favorites: Number.isInteger(userId)
+            ? { where: { userId }, select: { userId: true } }
+            : false,
         },
         orderBy: { updatedAt: "desc" },
         skip: (page - 1) * pageSize,
@@ -73,6 +85,7 @@ export async function GET(request: NextRequest) {
     // Flatten kategori untuk response yang lebih bersih
     const formattedQuotes = quotes.map((q: typeof quotes[number]) => ({
       ...q,
+      isFavorite: q.favorites?.length > 0,
       categories: q.categories.map((qc: typeof q.categories[number]) => qc.category),
     }));
 
@@ -124,7 +137,6 @@ export async function POST(request: NextRequest) {
     const quote = await prisma.quote.create({
       data: {
         text: body.text.trim(),
-        isFavorite: body.isFavorite ?? false,
         authorId: body.authorId ?? null,
         // Connect ke categories yang ada (by ID)
         categories: body.categoryIds?.length

@@ -1,42 +1,45 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Header from "@/components/layout/Header";
 import MobileNav from "@/components/layout/MobileNav";
 import Sidebar from "@/components/layout/Sidebar";
 
-const INITIAL_FAVORITES = [
-  {
-    id: 1,
-    text: "Simplicity is the ultimate sophistication.",
-    author: "Leonardo da Vinci",
-    categories: ["Art", "Design"],
-  },
-  {
-    id: 2,
-    text: "The details are not the details. They make the design.",
-    author: "Charles Eames",
-    categories: ["Architecture"],
-  },
-  {
-    id: 3,
-    text: "I shut my eyes in order to see.",
-    author: "Paul Gauguin",
-    categories: ["Art", "Vision"],
-  },
-];
-
 export default function FavoritesClient({ user }) {
-  const [favorites, setFavorites] = useState(INITIAL_FAVORITES);
+  const [favorites, setFavorites] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All Categories");
 
-  const categories = ["All Categories", ...new Set(favorites.flatMap((item) => item.categories))];
+  const fetchFavorites = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/favorites");
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.error || "Gagal mengambil favorite quotes");
+      setFavorites(result.data || []);
+    } catch (error) {
+      console.error("[Fetch Favorites Error]:", error);
+      setFavorites([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (user) fetchFavorites();
+  }, [fetchFavorites, user]);
+
+  const categories = [
+    "All Categories",
+    ...new Set(favorites.flatMap((item) => item.categories.map((itemCategory) => itemCategory.name))),
+  ];
   const visibleFavorites = useMemo(() => {
     const query = search.trim().toLowerCase();
     return favorites.filter((item) => {
-      const matchesSearch = !query || `${item.text} ${item.author}`.toLowerCase().includes(query);
-      const matchesCategory = category === "All Categories" || item.categories.includes(category);
+      const matchesSearch = !query || `${item.text} ${item.author?.name || ""}`.toLowerCase().includes(query);
+      const matchesCategory = category === "All Categories" || item.categories.some((itemCategory) => itemCategory.name === category);
       return matchesSearch && matchesCategory;
     });
   }, [category, favorites, search]);
@@ -96,19 +99,22 @@ export default function FavoritesClient({ user }) {
                 <div className="flex-1 pr-8">
                   <p className="font-serif text-body-lg italic leading-relaxed text-on-surface">&quot;{item.text}&quot;</p>
                   <p className="mt-3 flex items-center gap-2 text-label-md text-on-surface-variant">
-                    <span className="h-px w-4 bg-outline-variant" />{item.author}
+                    <span className="h-px w-4 bg-outline-variant" />{item.author?.name || "Unknown author"}
                   </p>
                 </div>
                 <div className="flex w-full flex-col justify-between gap-4 border-t border-outline-variant/10 pt-3 sm:w-auto sm:items-end sm:border-t-0 sm:pt-0">
                   <div className="flex flex-wrap justify-end gap-2">
-                    {item.categories.map((tag, index) => <span key={tag} className={`rounded border px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${index === 0 ? "border-primary-container/20 bg-primary-container/10 text-primary" : "border-tertiary-container/20 bg-tertiary-container/10 text-tertiary"}`}>{tag}</span>)}
+                    {item.categories.map((tag, index) => <span key={tag.id} className={`rounded border px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${index === 0 ? "border-primary-container/20 bg-primary-container/10 text-primary" : "border-tertiary-container/20 bg-tertiary-container/10 text-tertiary"}`}>{tag.name}</span>)}
                   </div>
                 </div>
                 <button
-                  onClick={() => setFavorites((items) => items.filter((favorite) => favorite.id !== item.id))}
+                  onClick={async () => {
+                    const response = await fetch(`/api/favorites/${item.id}`, { method: "DELETE" });
+                    if (response.ok) setFavorites((items) => items.filter((favorite) => favorite.id !== item.id));
+                  }}
                   className="absolute bottom-3 right-3 rounded-full p-2 text-primary transition-colors hover:bg-surface-variant"
                   title="Remove from favorites"
-                  aria-label={`Remove ${item.author} quote from favorites`}
+                  aria-label={`Remove ${item.author?.name || "quote"} from favorites`}
                 >
                   <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
                 </button>
@@ -116,7 +122,8 @@ export default function FavoritesClient({ user }) {
             ))}
           </div>
 
-          {visibleFavorites.length === 0 && <div className="glass-card rounded-xl p-12 text-center text-on-surface-variant">No favorite quotes found.</div>}
+          {isLoading && <div className="glass-card rounded-xl p-12 text-center text-on-surface-variant">Memuat favorite quotes...</div>}
+          {!isLoading && visibleFavorites.length === 0 && <div className="glass-card rounded-xl p-12 text-center text-on-surface-variant">No favorite quotes found.</div>}
         </div>
       </main>
       <MobileNav activeMenu="Favorites" />

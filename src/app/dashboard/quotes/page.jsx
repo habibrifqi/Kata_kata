@@ -150,10 +150,8 @@ export default function QuotesPage() {
         prev.map((q) => (q.id === id ? { ...q, isFavorite: newStatus } : q)),
       );
 
-      const res = await fetch(`/api/quotes/${id}`, {
+      const res = await fetch(`/api/favorites/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isFavorite: newStatus }),
       });
       const result = await res.json();
 

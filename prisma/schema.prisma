@@ -34,6 +34,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   authors   Author[]
+  favorites UserFavorite[]
 
   @@map("users")
 }
@@ -89,7 +90,6 @@ model Category {
 model Quote {
   id         Int             @id @default(autoincrement())
   text       String
-  isFavorite Boolean         @default(false)
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
 
@@ -99,8 +99,22 @@ model Quote {
 
   // Relasi ke Category (many-to-many — category bersifat global)
   categories QuoteCategory[]
+  favorites  UserFavorite[]
 
   @@map("quotes")
+}
+
+// Quote favorit milik masing-masing user.
+model UserFavorite {
+  userId    Int
+  quoteId   Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quote     Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@id([userId, quoteId])
+  @@index([quoteId])
+  @@map("user_favorites")
 }
 
 

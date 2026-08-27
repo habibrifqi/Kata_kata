@@ -111,7 +111,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       where: { id: quoteId },
       data: {
         ...(body.text && { text: body.text.trim() }),
-        ...(body.isFavorite !== undefined && { isFavorite: body.isFavorite }),
         ...(body.authorId !== undefined && { authorId: body.authorId ?? null }),
         // Update relasi kategori jika ada categoryIds
         ...(body.categoryIds !== undefined && {
