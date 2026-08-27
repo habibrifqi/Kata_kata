@@ -2,27 +2,40 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { CreateCategoryInput, ApiResponse, CategoryType } from "@/types";
 
+type CategoriesListResponse = {
+  categories: CategoryType[];
+  latestCategory: CategoryType | null;
+};
+
 // GET /api/categories - Ambil semua kategori
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") ?? "";
 
-    const categories = await prisma.category.findMany({
-      where: search
-        ? {
-            name: {
-              contains: search,
-              mode: "insensitive",
-            },
-          }
-        : undefined,
-      orderBy: { updatedAt: "desc" },
-    });
+    const [categories, latestCategoryArr] = await Promise.all([
+      prisma.category.findMany({
+        where: search
+          ? {
+              name: {
+                contains: search,
+                mode: "insensitive",
+              },
+            }
+          : undefined,
+        orderBy: { updatedAt: "desc" },
+      }),
+      prisma.category.findFirst({
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
 
-    const response: ApiResponse<CategoryType[]> = {
+    const response: ApiResponse<CategoriesListResponse> = {
       success: true,
-      data: categories,
+      data: {
+        categories,
+        latestCategory: latestCategoryArr ?? null,
+      },
     };
 
     return NextResponse.json(response, { status: 200 });

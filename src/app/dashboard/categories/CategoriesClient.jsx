@@ -16,6 +16,7 @@ const ITEMS_PER_PAGE = 4;
 
 export default function CategoriesClient({ user }) {
   const [categories, setCategories] = useState([]);
+  const [latestCategory, setLatestCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
@@ -50,7 +51,8 @@ export default function CategoriesClient({ user }) {
         );
       }
 
-      setCategories(result.data || []);
+      setCategories(result.data?.categories || []);
+      setLatestCategory(result.data?.latestCategory || null);
     } catch (err) {
       console.error("[GET /api/categories Error]:", err);
       setError(err.message || "Gagal memuat kategori");
@@ -94,6 +96,7 @@ export default function CategoriesClient({ user }) {
       )[0]
     : null;
   const topCategoryName = topCategoryItem ? topCategoryItem.name : "-";
+  const latestCategoryName = latestCategory ? latestCategory.name : "-";
 
   // Modal Actions
   const handleOpenAddModal = () => {
@@ -263,8 +266,8 @@ export default function CategoriesClient({ user }) {
           {/* Stats Overview */}
           <CategoryStats
             totalCategories={totalCategories}
-            totalQuotes={totalQuotes}
             topCategory={topCategoryName}
+            latestCategory={latestCategoryName}
           />
 
           {/* Category Search */}

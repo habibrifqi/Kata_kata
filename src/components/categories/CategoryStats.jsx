@@ -1,8 +1,12 @@
 "use client";
 
-export default function CategoryStats({ totalCategories = 12, totalQuotes = 342, topCategory = "Motivasi" }) {
+export default function CategoryStats({
+  totalCategories = 0,
+  topCategory = "-",
+  latestCategory = "-",
+}) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-stack_lg">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-stack_lg">
       {/* Total Kategori */}
       <div className="glass-surface p-4 sm:p-6 rounded-2xl flex items-center gap-4">
         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
@@ -18,23 +22,8 @@ export default function CategoryStats({ totalCategories = 12, totalQuotes = 342,
         </div>
       </div>
 
-      {/* Kutipan Terarsip */}
-      <div className="glass-surface p-4 sm:p-6 rounded-2xl flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary shrink-0">
-          <span className="material-symbols-outlined">auto_awesome</span>
-        </div>
-        <div className="min-w-0">
-          <div className="font-display-lg-mobile text-display-lg-mobile font-bold text-secondary truncate">
-            {totalQuotes}
-          </div>
-          <div className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-            Kutipan Terarsip
-          </div>
-        </div>
-      </div>
-
       {/* Top Kategori */}
-      <div className="glass-surface p-4 sm:p-6 rounded-2xl flex items-center gap-4 overflow-hidden relative sm:col-span-2 lg:col-span-1">
+      <div className="glass-surface p-4 sm:p-6 rounded-2xl flex items-center gap-4 overflow-hidden relative">
         <div className="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary shrink-0">
           <span className="material-symbols-outlined">trending_up</span>
         </div>
@@ -48,6 +37,24 @@ export default function CategoryStats({ totalCategories = 12, totalQuotes = 342,
         </div>
         <div className="absolute -right-4 -bottom-4 opacity-10 rotate-12 scale-150 pointer-events-none">
           <span className="material-symbols-outlined text-8xl">stars</span>
+        </div>
+      </div>
+
+      {/* Kategori Terbaru */}
+      <div className="glass-surface p-4 sm:p-6 rounded-2xl flex items-center gap-4 overflow-hidden relative">
+        <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary shrink-0">
+          <span className="material-symbols-outlined">new_releases</span>
+        </div>
+        <div className="min-w-0">
+          <div className="font-display-lg-mobile text-display-lg-mobile font-bold text-secondary truncate max-w-[180px]">
+            {latestCategory}
+          </div>
+          <div className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
+            Kategori Terbaru
+          </div>
+        </div>
+        <div className="absolute -right-4 -bottom-4 opacity-10 -rotate-12 scale-150 pointer-events-none">
+          <span className="material-symbols-outlined text-8xl">category</span>
         </div>
       </div>
     </div>
