@@ -65,7 +65,7 @@ export default function CategoryList({ categories, onEdit, onDelete }) {
 
                 <td className="px-4 sm:px-6 py-4">
                   <span className="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full whitespace-nowrap">
-                    {cat.quotesCount} <span className="text-[10px] opacity-60">quotes</span>
+                    {cat._count?.quotes ?? cat.quotesCount} <span className="text-[10px] opacity-60">quotes</span>
                   </span>
                 </td>
                 <td className="px-4 sm:px-6 py-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">

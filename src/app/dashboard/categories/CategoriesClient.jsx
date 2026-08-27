@@ -92,7 +92,7 @@ export default function CategoriesClient({ user }) {
   );
   const topCategoryItem = categories.length
     ? [...categories].sort(
-        (a, b) => (b.quotesCount || 0) - (a.quotesCount || 0),
+        (a, b) => (b._count?.quotes ?? b.quotesCount ?? 0) - (a._count?.quotes ?? a.quotesCount ?? 0),
       )[0]
     : null;
   const topCategoryName = topCategoryItem ? topCategoryItem.name : "-";

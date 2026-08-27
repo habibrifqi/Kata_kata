@@ -24,9 +24,15 @@ export async function GET(request: NextRequest) {
             }
           : undefined,
         orderBy: { updatedAt: "desc" },
+        include: {
+          _count: { select: { quotes: true } },
+        },
       }),
       prisma.category.findFirst({
         orderBy: { createdAt: "desc" },
+        include: {
+          _count: { select: { quotes: true } },
+        },
       }),
     ]);
 

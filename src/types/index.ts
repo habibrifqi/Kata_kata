@@ -66,6 +66,9 @@ export interface CategoryType {
   quotesCount: number;
   createdAt: Date | string;
   updatedAt: Date | string;
+  _count?: {
+    quotes: number;
+  };
 }
 
 export type CreateCategoryInput = Omit<CategoryType, "id" | "createdAt" | "updatedAt" | "quotesCount"> & {
